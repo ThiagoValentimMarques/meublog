@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>THIAGO VALENTIM</title>
+    <link>/</link>
+    <description>Recent content on THIAGO VALENTIM</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 11 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A Covid-19 no Brasil em números</title>
+      <link>/post/a-covid-19-no-brasil-em-numeros/</link>
+      <pubDate>Sat, 11 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/a-covid-19-no-brasil-em-numeros/</guid>
+      <description>Para início de conversaAtualmente o mundo vive em uma situação que jamais pensei que iríamos passar. Escolas e universidades com aulas suspensas, empresas de portas fechadas, competições esportivas suspensas, o que incluiu até as olímpiadas de Tóquio que ocorreriam este ano. Enfim, desde que a Organização Mundial da Saúde (OMS) classificou a Covid-19 (do inglês, “Coronavirus disease”) como pandemia, autoridades vários países vêm recomendando o isolamento social para evitar o avanço da Covid-19.</description>
+    </item>
+    
+    <item>
+      <title>Contato</title>
+      <link>/contact/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/contact/</guid>
+      <description>e-mail acadêmico thiago.valentim@ifrn.edu.br
+e-mail pessoal thiagomadridd@gmail.com</description>
+    </item>
+    
+    <item>
+      <title>First snippet</title>
+      <link>/snippets/first/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/snippets/first/</guid>
+      <description>This content is in snippets/first/index.md
+pwd </description>
+    </item>
+    
+    <item>
+      <title>Publicações</title>
+      <link>/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/</guid>
+      <description>Artigos científicos com autor ou coautor 2020  Environmental and biophysical controls of evapotranspiration from Seasonally Dry Tropical Forests (Caatinga) in the Brazilian Semiarid. Agricultural and Forest Meteorology, v. 287, 107957, 2020.  2019   Closure and partitioning of the energy balance in a preserved area of a Brazilian seasonally dry tropical forest. Agricultural and Forest Meteorology. v. 271, pp. 398-412, 2019.
+  Basin scale rainfall-evapotranspiration dynamics in a tropical semiarid environment during dry and wet years.</description>
+    </item>
+    
+    <item>
+      <title>Second snippet</title>
+      <link>/snippets/second/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/snippets/second/</guid>
+      <description>This content is in snippets/second/index.md
+ls -la </description>
+    </item>
+    
+    <item>
+      <title>Sobre</title>
+      <link>/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Informações acadêmicas Me chamo Thiago Valentim Marques, doutorando em Ciências Climáticas pela Universidade Federal do Rio Grande do Norte (UFRN). Sou Mestre em Matemática em Rede Nacional (PROFMAT) pela Universidade Federal da Paraíba (UFPB). Especialista em Ensino de Matemática pela Universidade Estadual Vale do Acaraú (UVA). Tenho Graduação em Matemática pela UFRN e no momento também curso Estatística na mesma universidade. Sou Professor de Matemática do Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte (IFRN) desde o ano de 2010 e atualmente estou lotado no Campus Natal - Zona Norte.</description>
+    </item>
+    
+  </channel>
+</rss>

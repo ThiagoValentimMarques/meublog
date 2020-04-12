@@ -1,0 +1,244 @@
+---
+title: A Covid-19 no Brasil em números
+author: Thiago Valentim
+date: '2020-04-11'
+slug: a-covid-19-no-brasil-em-numeros
+categories:
+  - R
+tags:
+  - coronavírus
+  - pandemia
+  - estatística
+  - análise descritiva
+  - software R
+  - R Markdown
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+### Para início de conversa
+
+Atualmente o mundo vive em uma situação que jamais pensei que iríamos passar. Escolas e universidades com aulas suspensas, empresas de portas fechadas, competições esportivas suspensas, o que incluiu até as olímpiadas de Tóquio que ocorreriam este ano. Enfim, desde que a Organização Mundial da Saúde (OMS) classificou a *Covid-19* (do inglês, *"Coronavirus disease"*) como pandemia, autoridades vários países vêm recomendando o isolamento social para evitar o avanço da Covid-19. O vírus já infectou mais de 1,6 milhão de pessoas e provocou cerca de 100 mil mortes em todo o mundo.
+
+A Covid-19 foi identificada pela primeira vez em Wuhan, na província de Hubei, República Popular da China, em 1 de dezembro de 2019. O primeiro caso foi reportado em 31 de dezembro do mesmo ano e no dia 11 de março de 2020 foi classificada como pandemia pela OMS. Desde então, as secretarías nacionais de saúde começaram a quantificar os pacientes infectados, recuperados e mortos pelo novo coronavírus. Apesar dos conjuntos de dados da Covid-19 apresentarem em geral problemas de subnotificação de infectados e de mortos, tenho certeza de esta pandemia será aquela cuja sociedade terá mais informações à respeito.
+
+O **escopo** das postagens iniciais deste blog será a realização de análises descritivas da Covid-19 nos cenários local (Rio Grande do Norte), brasileiro e internacional. Para os leitores que desejarem informações sobre modelos preditivos para dados epidemiológicos, recomendo que acessem o [aplicativo](https://andersoncso.shinyapps.io/Brasil/?fbclid=IwAR0ykIzDZ341JfolzlqEDZl-cjp4IRVKXhC5AOUk5i3-eWuSo3FyiaJyo-c) desenvolvido pelo departamento de estatística da UFMT. Todos os códigos utilizados neste post estão no [meu GitHub](https://github.com/ThiagoValentimMarques). 
+
+### Sobre os dados
+
+As informações sobre o número de casos confirmados, óbitos e pacientes recuperados da Covid-19 em âmbito internacional estão sendo obtidas pelo [conjunto de dados](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases) do Johns Hopkins of Public Healt. Em âmbito nacional, essas informações (com exceção do número de pacientes recuperados) encontram-se na [plataforma](https://covid.saude.gov.br/) do Ministério da Saúde sobre o novo coronavírus.
+
+Todas as análises estatísticas foram realizadas no **software R versão 3.5.3** com o auxílio dos seguintes pacotes:
+
+```{r echo=TRUE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(brazilmaps)
+library(gridExtra)
+library(ggspatial)
+library(ggrepel)
+```
+
+### Casos confirmados e óbitos pelo novo coronavírus
+
+No Brasil, o primeiro caso confirmado e a primeira morte foram registrados nos dias 26 de fevereiro e 17 de março, respectivamente. Vale ressaltar que somente os pacientes que vêm procurando o hospital e apresentam alguma evidência médica para Covid-19 estão sendo testados aqui no Brasil, ou seja, os casos confirmados relatados pelo Ministério da Saúde tem problema de subnotificação. Imagino que as informações relativas aos óbitios são as que mais se aproximam do valor real. Um outro indicativo de subnotificação é a taxa de letalidade muito alta (5,4%), visto que [Wu et al. (2020)](https://www.nature.com/articles/s41591-020-0822-7) identificaram taxa de 1,4% em Wuhan, que teve testagem em massa. 
+
+O Gráfico a seguir mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Brasil. Nota-se que a partir do dia 18/03 o acumulado dos casos confirmados começou a "subida do morro". Apesar das subnotificações, estes são os dados que temos. Acredito que nas próximas semanas o número de casos irá "explodir" em virtude dos testes 500 mil testes rápidos prometidos pelo Governo Federal.  
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+### Importando as informações do Ministério da Saúde
+### https://covid.saude.gov.br/
+
+corona <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200411.csv",header=TRUE,sep=";") 
+
+names(corona)[2]<-"sigla"
+names(corona)[3]<-"date"
+
+corona$date <- as.Date(corona$date,format="%d/%m/%y") #Formato de data
+brasil <- aggregate(. ~ date, corona, sum) #Obtendo os dados do Brasil por data
+brasil <- brasil[-c(1:27),] #Excluindo os dias com nenhum caso registrado
+brasil$date <- substr(brasil$date,6,10) #Formato da data "mm-dd"
+
+taxa_m <- round(100*(max(brasil$obitosAcumulados)/max(brasil$casosAcumulados)),1)
+taxa_m<-paste(taxa_m,"%") #Taxa de letalidade
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico do acumulado de casos e óbitos
+
+brasil %>%
+  group_by(date)%>%
+  ggplot(.,aes(x=date,y=casosAcumulados))+geom_point()+
+  geom_line(aes(y = casosAcumulados, group="",colour = "Casos Acumulados"))+
+  geom_point(aes(y=obitosAcumulados, group="",colour = "Óbitos Acumulados"))+
+  geom_line(aes(y=obitosAcumulados, group="",colour = "Óbitos Acumulados"))+
+  geom_point(aes(y=casosAcumulados, group="",colour = "Casos Acumulados"))+
+  scale_color_manual(values=c("blue", "red"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Covid-19 no Brasil: acumulado de casos e óbitos",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="bottom",legend.title=element_blank(), 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  annotate("text",x=12,y=max(brasil$casosAcumulados-500),hjust=0,vjust=0,
+           label=paste("Letalidade =",bquote(.(taxa_m))),colour="red",size=4.5)+
+  annotate("segment", x = 20, xend = 21, y = 1500, yend = 100,
+           colour = "black", size=1.0, alpha=0.6, 
+           arrow = arrow(length = unit(2, "mm")))+
+  annotate(geom = "text", x = 16, y = 1900, label = "Primeiro óbito", hjust = "left")
+
+```
+
+No último boletim do Ministério da Saúde, hoje 11 de abril, foram registrados 1089 casos de Covid-19, enquanto o número de óbitos foi de 68. Pelo terceiro dia consecutivo o número de casos registrados apresenta uma quantidade menor do que no dia anterior. O fato do Brasil ser um dos países com a menor quantidade de testes realizados do mundo (296 por 1 milhão de pessoas, de acordo com o [worldometer](https://www.worldometers.info/coronavirus/)) pode causar a falsa impressão de que o vírus não está se alastrando como em outros países. Desse modo, temo que algumas pessoas pensem em afrouxar o isolamento social.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+brasil %>%
+  group_by(date)%>%
+  ggplot(.,aes(x=date,y=casosNovos))+geom_point()+
+  geom_line(aes(y = casosNovos, group="",colour = "Casos Acumulados"))+
+  geom_point(aes(y=obitosNovos, group="",colour = "Óbitos Acumulados"))+
+  geom_line(aes(y=obitosNovos, group="",colour = "Óbitos Acumulados"))+
+  geom_point(aes(y=casosNovos, group="",colour = "Casos Acumulados"))+
+  scale_color_manual(values=c("blue", "red"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Covid-19 no Brasil: casos e óbitos diários",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="bottom",legend.title=element_blank(),
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  annotate("text",x=12,y=max(brasil$casosNovos-100),hjust=0,vjust=0,
+           label=paste("Letalidade =",bquote(.(taxa_m))),colour="red",size=4.5)+
+  annotate("segment", x = 20, xend = 21, y = 230, yend = 20,
+           colour = "black", size=1.0, alpha=0.6, 
+           arrow = arrow(length = unit(2, "mm")))+
+  annotate(geom = "text", x = 17, y = 300, label = "Primeiro óbito", hjust = "left")
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Inserindo informações sobre os estados do Nordeste 
+n <- length(corona[corona$sigla=="RN",]$sigla)
+nordeste <- rep(c("RN","PB","PE","SE","MA","CE","BA","PI","AL"),each=n)
+pop_ne <- rep(c(3409000,3944000,9278000,2220000,6851000,8843000,15130000,3195000,
+                3322000),each=n)
+dia<-rep(substr(corona[corona$sigla =="RN",]$date,6,10),9)
+info <- data.frame(nordeste,pop_ne,dia)
+
+hoje <- "04-11"  #deve ser inserida a data de hoje em mês-dia
+hoje2<- as.Date("11/04/2020",format="%d/%m/%y")
+
+corona <- as_tibble(corona)
+
+corona <- as_tibble(corona)
+corona <- corona %>%   
+  mutate(label = if_else(date == hoje2,
+                   as.character(sigla), NA_character_))%>% 
+  mutate(date = ymd(date)) %>%  
+  mutate(date = substr(date,6,10))
+```
+
+
+### O mapa da Covid-19 no Brasil
+
+A seguir temos o gráfico do número de casos abslutos por estado e também um mapa com o número de casos considerando a população de cada estado. São Paulo é disparado o estado com maior número de casos no Brasil (8419) casos. Com relação a incidência do vírus, (proporção de casos numa determinada população) temos o 
+Amazonas (25,3), Amapá (22,8), Distrito Federal (19,2), São Paulo (18,3), Ceará (17,3) e Rio de Janeiro (15,1 casos/100.000 hab.) ocupam as primeiras posições desse ranking nem um pouco orgulhoso. 
+
+![](C:/Users/Thiago/Documents/Git/meublog/static/images/covid/Brasil1104.png)
+
+### Região Nordeste
+
+Os gráficos a seguir mostram como estão os estados do Nordeste com relação aos casos confirmados do novo coronavírus. Tanto nos casos confirmados quanto na incidência da Covid-19, o estado do Ceará registra os maiores valores. Notem que mesmo sendo o quinto estado nordestino no número de casos, o Rio Grande do Norte só está atrás do Ceará na incidência do vírus. Paraíba, Sergipe, Piauí e Alagoas são os estados com menor número de casos confirmados e menor incidência da Covid-19 apresentando quantidades inferiores a 100 casos e 2,5 casos/100.000 habitantes, respectivamente.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Gráfico do Nordeste (absolutos)
+
+corona %>%
+  filter(sigla %in% c("RN","PB","PE","SE","MA","CE","BA","PI","AL"))%>%
+  left_join(info, c("date" = "dia","sigla"="nordeste")) %>%
+  filter(date %in% substr(seq(as.Date("2020/03/04"),
+                              as.Date("2020/04/11"),by = "day"),6,10))%>%
+  group_by(date)%>%
+  ggplot(., aes(x = date, y = casosAcumulados, group = sigla, colour = sigla)) +
+  geom_line(cex=1.1)+
+  labs(x = "Data", y = "Casos confirmados", colour = "Estado",
+       title="Covid-19: acumulados dos casos por estado",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim") +
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  geom_label_repel(aes(label = label),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")+
+  theme(panel.background = element_rect(fill = "grey96"))
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Gráfico do Nordeste (incidência)
+
+corona %>%
+  filter(sigla %in% c("RN","PB","PE","SE","MA","CE","BA","PI","AL"))%>%
+  left_join(info, c("date" = "dia","sigla"="nordeste")) %>%
+  mutate(prop = 100000*(casosAcumulados/pop_ne))%>%
+  filter(date %in% substr(seq(as.Date("2020/03/04"),
+                              as.Date("2020/04/11"),by = "day"),6,10))%>%
+  group_by(date)%>%
+  ggplot(., aes(x = date, y = prop, group = sigla, colour = sigla)) +
+  geom_line(cex=1.1)+
+  labs(x = "Data", y = "Casos confirmados a cada 100k hab.", colour = "Estado",
+       title="Covid-19: acumulados dos casos por estado (proporcional)",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim") +
+  #scale_colour_viridis_d()+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  geom_label_repel(aes(label = label),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")+
+  theme(panel.background = element_rect(fill = "grey96"))
+
+```
+
+Algo que impressiona bastante é o gráfico da letalidade nos estados do Nordeste. Piauí, Paraíba, Sergipe e Pernambuco estão apresentando letalidade muito alta. Em particular, o Piauí apresenta letalidade em quase 20%. A Bahia, em contraste, apresenta a menor letalidade (3,3%). Como eu disse anteriormente, isso é um forte indicativo de subnotifcação. Diante dos poucos testes que estamos fazendo, podemos ter a impressão de que a Covid-19 mata muito mais do que está matando na realidade. Além disso, essas subnotificações aliada com a ausência do registro do número de casos recuperados tornam os modelos epidimiológicos (por exemplo o modelo SIR) com previsões catastróficas. Como diria uma frase que vi hoje e se encaixa nessa situação: "não se faz um bolo bom com ingredientes ruins".
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Letalidade do Nordeste
+
+corona %>%
+  filter(sigla %in% c("RN","PB","PE","SE","MA","CE","BA","PI","AL"))%>%
+  left_join(info, c("date" = "dia","sigla"="nordeste")) %>%
+  filter(date == substr(as.Date("2020/04/11"),6,10))%>%
+  mutate(let = 100*(obitosAcumulados/casosAcumulados))%>%
+  ggplot(., aes(x=reorder(sigla,desc(let)), y=let,fill=sigla)) + geom_col()+
+  ylab("Letalidade (%)")+xlab("Estados")+ 
+  labs(title="Latalidade da Covid-19 na Região Nordeste",
+       caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim",
+       fill="Estados")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+```
+
+A análise de hoje se encerra por aqui. Na próxima postagem irei apresentar a evolução do acumulado de casos no Brasil comparada com o que está ocorrendo em outros países. Até a próxima pessoal!!!

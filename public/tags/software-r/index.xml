@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>software R on THIAGO VALENTIM</title>
+    <link>/tags/software-r/</link>
+    <description>Recent content in software R on THIAGO VALENTIM</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 11 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/software-r/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>A Covid-19 no Brasil em números</title>
+      <link>/post/a-covid-19-no-brasil-em-numeros/</link>
+      <pubDate>Sat, 11 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/a-covid-19-no-brasil-em-numeros/</guid>
+      <description>Para início de conversaAtualmente o mundo vive em uma situação que jamais pensei que iríamos passar. Escolas e universidades com aulas suspensas, empresas de portas fechadas, competições esportivas suspensas, o que incluiu até as olímpiadas de Tóquio que ocorreriam este ano. Enfim, desde que a Organização Mundial da Saúde (OMS) classificou a Covid-19 (do inglês, “Coronavirus disease”) como pandemia, autoridades vários países vêm recomendando o isolamento social para evitar o avanço da Covid-19.</description>
+    </item>
+    
+  </channel>
+</rss>
