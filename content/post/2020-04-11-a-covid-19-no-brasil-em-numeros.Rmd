@@ -157,11 +157,7 @@ corona <- corona %>%
 A seguir temos o mapa do número de casos abslutos por estado e também um mapa com o número de casos considerando a população de cada estado. São Paulo é disparado o estado com maior número de casos no Brasil (8755) casos. Com relação a incidência do vírus, (proporção de casos numa determinada população) temos o 
 Amazonas (29,1), Amapá (27,2), Distrito Federal (20,4), São Paulo (19,1), Ceará (18,4) e Rio de Janeiro (16,5 casos/100.000 hab.) ocupam as primeiras posições desse ranking nem um pouco orgulhoso. 
 
-```{r, echo=FALSE,out.width='100%'}
-
-knitr::include_graphics("C:/Users/Thiago/Documents/Git/meublog/static/images/covid/brasil1104.png")
-
-```
+Para visualizar o mapa clique [aqui](https://github.com/ThiagoValentimMarques/covid12042020/blob/master/brasil1104.png?raw=true).
 
 ### Região Nordeste
 
