@@ -30,7 +30,7 @@ O **escopo** das postagens iniciais deste blog será a realização de análises
 
 As informações sobre o número de casos confirmados, óbitos e pacientes recuperados da Covid-19 em âmbito internacional estão sendo obtidas pelo [conjunto de dados](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases) do Johns Hopkins of Public Healt. Em âmbito nacional, essas informações (com exceção do número de pacientes recuperados) encontram-se na [plataforma](https://covid.saude.gov.br/) do Ministério da Saúde sobre o novo coronavírus.
 
-Todas as análises estatísticas foram realizadas no **software R versão 3.5.3** com o auxílio dos seguintes pacotes:
+Todas as análises estatísticas foram realizadas no **software R versão 3.6.3** com o auxílio dos seguintes pacotes:
 
 ```{r echo=TRUE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 library(tidyverse)
@@ -150,10 +150,10 @@ corona <- corona %>%
 
 ### O mapa da Covid-19 no Brasil
 
-A seguir temos o gráfico do número de casos abslutos por estado e também um mapa com o número de casos considerando a população de cada estado. São Paulo é disparado o estado com maior número de casos no Brasil (8419) casos. Com relação a incidência do vírus, (proporção de casos numa determinada população) temos o 
+A seguir temos o mapa do número de casos abslutos por estado e também um mapa com o número de casos considerando a população de cada estado. São Paulo é disparado o estado com maior número de casos no Brasil (8419) casos. Com relação a incidência do vírus, (proporção de casos numa determinada população) temos o 
 Amazonas (25,3), Amapá (22,8), Distrito Federal (19,2), São Paulo (18,3), Ceará (17,3) e Rio de Janeiro (15,1 casos/100.000 hab.) ocupam as primeiras posições desse ranking nem um pouco orgulhoso. 
 
-![](C:/Users/Thiago/Documents/Git/meublog/static/images/covid/Brasil1104.png)
+Para visualizar o mapa clique [aqui](https://github.com/ThiagoValentimMarques/Covid11042020/blob/master/brasil1104.png?raw=true).
 
 ### Região Nordeste
 
