@@ -1,0 +1,368 @@
+---
+title: "Como alguns países estão lidando com a Covid-19"
+author: "Thiago Valentim"
+date: '2020-04-17'
+output:
+  html_document:
+    df_print: paged
+slug: como-alguns-paises-estao-lidando-com-a-covid-19
+tags:
+- coronavírus
+- pandemia
+- isolamento social
+- análise descritiva
+- estatística
+- R Markdown
+categories: R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Para início de conversa
+
+Nas últimas semanas tenho lido matérias de jornais sobre alguns países diante da pandemia do novo coronavírus. Por exemplo:
+
+* [Coronavírus: o que está por trás do sucesso da Coreia do Sul para salvar vidas em meio à pandemia](https://g1.globo.com/bemestar/coronavirus/noticia/2020/03/16/coronavirus-o-que-esta-por-tras-do-sucesso-da-coreia-do-sul-para-salvar-vidas-em-meio-a-pandemia.ghtml);
+* [Dinamarca é 2º país europeu a anunciar relaxamento de medidas contra coronavírus](https://www.otempo.com.br/coronavirus/dinamarca-e-2-pais-europeu-a-anunciar-relaxamento-de-medidas-contra-coronavirus-1.2318578);
+* [Áustria libera treinos de futebol em clubes de 1ª e 2ª divisões](https://agenciabrasil.ebc.com.br/esportes/noticia/2020-04/austria-libera-treinos-de-futebol-em-clubes-de-1a-e-2a-divisoes);
+* [Como a Nova Zelândia tornou-se modelo a ser seguido na pandemia](https://veja.abril.com.br/ciencia/como-a-nova-zelandia-tornou-se-modelo-a-ser-seguido-na-pandemia/);
+* [A volta do coronavírus a Singapura, país que era 'exemplo' no combate à doença](https://noticias.uol.com.br/ultimas-noticias/bbc/2020/04/12/a-volta-do-coronavirus-a-cingapura-pais-que-era-exemplo-no-combate-a-doenca.htm).
+
+Diante disso, resolvi coletar dados sobre os **(i)** casos confirmados e óbitos por Covid-19, **(ii)** letalidade e a **(iii)** quantidade de testes que estão sendo realizados no Brasil e nos países mencionados nas matérias para realizar uma análise descritiva dos dados.
+
+### Sobre os dados e as análises
+
+As informações sobre o número de casos confirmados, óbitos e pacientes recuperados da Covid-19 em âmbito internacional estão sendo obtidas pelo [conjunto de dados](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases) do Johns Hopkins of Public Healt. Todas as análises estatísticas foram realizadas no **software R versão 3.6.3** com o auxílio dos seguintes pacotes:
+
+```{r echo=TRUE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+library(tidyverse)
+library(ggrepel)
+library(gridExtra)
+
+```
+
+Todos os códigos utilizados neste post encontram-se no meu [github](https://github.com/ThiagoValentimMarques).
+
+### Casos confirmados e óbitos por Covid-19
+
+Os acumulados dos casos registrados no Brasil (BRA), Áustria (AUS), Coréia do Sul (COR), Dinamarca (DIN), Singapura (SIN) e Nova Zelândia são apresentados na **Figura 1**. Para que a análise seja mais justa, decidi utilizar a incidência do vírus (proporção entre os casos e a população do país) aos invés dos números absolutos. A curva da Coréia do Sul apresenta forma de "S", que é padrão para dados epidemiológicos. Nesse país já teve o início, o pico e agora estão na fase final com uma quantidade mais ou menos estável de casos. Vale ressaltar que a principal estratégia da Coréia do Sul para enfrentar a pandemia foram os diagnósticos massivos para a doença, obtidos por uma política de testagem em massa. 
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#################################################################################
+#                                                                               #
+# Covid-19: Por que alguns países estão flexibilizando as medidas protetivas?   #
+#                                                                               #
+# Autor: Thiago Valentim                                     Data: 16/04/2020   #
+#                                                                               #
+#################################################################################
+
+#-------------------------------- Códigos em R ---------------------------------#
+
+#########################################################
+#---------- Pacotes necessários para a análise ---------#
+#########################################################
+
+library(tidyverse)
+library(ggrepel)
+
+#########################################################
+#------------------ URL dos dados ----------------------#
+#########################################################
+
+# Casos confirmados
+url1 <- "https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv&filename=time_series_covid19_confirmed_global.csv" 
+
+# Óbitos 
+url2 <- "https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_deaths_global.csv&filename=time_series_covid19_deaths_global.csv"
+
+#########################################################
+#-------------- Preparação dos dados -------------------#
+#########################################################
+
+casos <- read.csv(url1,header=TRUE)
+obitos <- read.csv(url2,header=TRUE)
+
+# Países que desejo fazer a análise
+paises <- c("Brazil","Denmark","Austria","Korea, South","New Zealand",
+            "Singapore") 
+
+# Nomemclatura que serão exibidas nas análises
+sel <- c("Brasil","Dinamarca","Áustria","Coréia do Sul","Nova Zelândia",
+         "Singapura")
+
+# População dos respectivos países
+pop <- c(209300000,5806000,8859000,51640000,4886000,5639000)
+
+# Testes para 1 milhão de pessoas
+teste1M <- c(296,14223,18078,10509,14549,12423) #Fonte: worldometers
+
+##############################################################################
+################ Início da rotina para os casos ##############################
+##############################################################################
+
+casos <- casos %>%
+  filter(Country.Region %in% paises)
+
+n<-dim(casos[,-c(1,2,3,4)])[2]
+
+matriz<-matrix("NA",ncol=length(paises),nrow=n)
+matriz2<-matrix("NA",ncol=length(paises),nrow=n)
+matriz3<-matrix("NA",ncol=length(paises),nrow=n)
+j<-0
+for(i in paises){
+  valor <- as.vector(apply(casos[casos$Country.Region==i,-c(1,2,3,4)],2,sum))
+  if(names(table(valor))[1]=="0"){
+    cont<-table(valor)[1]
+    valor<-valor[-c(1:cont)]
+    last_point <- rep(NA_character_,length(valor)-1)
+    last_point[length(valor)]<-sel[j+1]
+    valor[(length(valor)+1):(length(valor)+cont)]<-rep("NA",cont)
+    last_point[(length(last_point)+1):(length(last_point)+
+                                         cont)]<-rep(NA_character_,cont)
+    diario<-NULL
+    diario[1]<-as.numeric(valor[1])
+    for(k in 2:length(valor)){
+      diario[k] <- as.numeric(valor[k])-as.numeric(valor[k-1])
+    }
+  }else{
+    last_point <- rep(NA_character_,length(valor)-1)
+    last_point[length(valor)]<-sel[j+1]
+    diario<-NULL
+    diario[1]<-as.numeric(valor[1])
+    for(k in 2:length(valor)){
+      diario[k] <- as.numeric(valor[k])-as.numeric(valor[k-1])
+    }
+  }
+  j<-j+1
+  matriz[,j]<-valor
+  matriz2[,j]<-last_point
+  matriz3[,j]<-diario
+} 
+
+point<-as.vector(matriz2)
+casos <- as.vector(as.numeric(matriz))
+diario <- as.vector(as.numeric(matriz3))
+logcasos <- log10(casos)
+propcasos100k <- 100000*casos/rep(pop,each=n)
+propdia1m <- 1000000*diario/rep(pop,each=n)
+data <- seq(as.Date("2020/02/26"), by = "day", length.out = n)
+data <- rep(data,length(paises))
+data <- substr(data,6,10)
+País <- rep(sel,each=n)
+dia <- rep(1:dim(matriz)[1],length(paises))
+corona <- data.frame(data,dia,País,casos,logcasos,propcasos100k,point,
+                     diario,propdia1m)
+corona <- as.tibble(corona)
+
+##############################################################################
+################# Final da rotina para os casos ##############################
+##############################################################################
+
+```
+
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 1
+
+ggplot(corona,aes(x=dia,y=propcasos100k,group=País,colour=País))+
+  geom_line(size=1.2)+
+  ylab("Casos confirmados para cada 100 mil habitantes")+
+  xlab("Dias a partir do primeiro caso")+ 
+  labs(title="Figura 1: Acumulado de casos confirmados por Covid-19",
+caption="Fonte: Johns Hopkins School of Public Health    Autor: Thiago Valentim",
+       fill="País")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]+10))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.3,segment.colour = "transparent")
+
+```
+
+Dentre os demais países, só enxergo a Nova Zelândia que possa estar no início da estabilidade nos casos confirmados. Sobre Áustria e Dinamarca, prefiro estudar o comportamento das curvas nas próximas semanas. Singapura, que já foi um país "modelo" no controle da Covid-19, está com um acelerado crescimento nos casos confirmados. Sobre o Brasil, mesmo com o problema dos casos confirmados serem subnotificados, imagino que a campanha pelo isolamento social aliada com o fato do país ter dimensões continentais estão fazendo a subida da curva não ser tão acelerada.
+
+Os dados sobre óbitos naturalmente devem ser mais próximos da quantidade real quando conparado com os casos confirmados. Sei que "atrasos" no registro de alguns casos não irão significar que todos os óbitos registrados em um dia ocorreram efetivamente neste mesmo dia, mas entendo que esses números são bem mais realistas do que o número de casos confirmados. As **Figuras 2** e **3** representam o acumulado de óbtidos (proporcional com a população dos países) e o registro diário de óbitos, respectivamente. 
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+##############################################################################
+################ Início da rotina para os óbitos #############################
+##############################################################################
+
+obitos <- obitos %>%
+  filter(Country.Region %in% paises)
+
+n<-dim(obitos[,-c(1,2,3,4)])[2]
+
+matriz<-matrix("NA",ncol=length(paises),nrow=n)
+matriz2<-matrix("NA",ncol=length(paises),nrow=n)
+matriz3<-matrix("NA",ncol=length(paises),nrow=n)
+j<-0
+for(i in paises){
+  valor <- as.vector(apply(obitos[obitos$Country.Region==i,-c(1,2,3,4)],2,sum))
+  if(names(table(valor))[1]=="0"){
+    cont<-table(valor)[1]
+    valor<-valor[-c(1:cont)]
+    last_point <- rep(NA_character_,length(valor)-1)
+    last_point[length(valor)]<-sel[j+1]
+    valor[(length(valor)+1):(length(valor)+cont)]<-rep("NA",cont)
+    last_point[(length(last_point)+1):(length(last_point)+
+                                         cont)]<-rep(NA_character_,cont)
+    diario<-NULL
+    diario[1]<-as.numeric(valor[1])
+    for(k in 2:length(valor)){
+      diario[k] <- as.numeric(valor[k])-as.numeric(valor[k-1])
+    }
+  }else{
+    last_point <- rep(NA_character_,length(valor)-1)
+    last_point[length(valor)]<-sel[j+1]
+    diario<-NULL
+    diario[1]<-as.numeric(valor[1])
+    for(k in 2:length(valor)){
+      diario[k] <- as.numeric(valor[k])-as.numeric(valor[k-1])
+    }
+  }
+  j<-j+1
+  matriz[,j]<-valor
+  matriz2[,j]<-last_point
+  matriz3[,j]<-diario
+} 
+
+point<-as.vector(matriz2)
+obitos <- as.vector(as.numeric(matriz))
+diario <- as.vector(as.numeric(matriz3))
+logobitos <- log10(obitos)
+propobt100k <- 100000*obitos/rep(pop,each=n)
+propdiaobt1m <- 1000000*diario/rep(pop,each=n)
+data <- seq(as.Date("2020/02/26"), by = "day", length.out = n)
+data <- rep(data,length(paises))
+data <- substr(data,6,10)
+País <- rep(sel,each=n)
+dia <- rep(1:dim(matriz)[1],length(paises))
+cor_obt <- data.frame(data,dia,País,obitos,logobitos,propobt100k,point,
+                     diario,propdiaobt1m)
+cor_obt <- as.tibble(cor_obt)
+
+##############################################################################
+################  Final da rotina para os óbitos  ############################
+##############################################################################
+```
+
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Gráfico 2
+
+ggplot(cor_obt,aes(x=dia,y=propobt100k,group=País,colour=País))+geom_line(size=1.2)+
+ylab("Óbitos para cada 100 mil habitantes")+xlab("Dias a partir do primeiro óbito")+ 
+labs(title="Figura 2: Evolução da Covid-19 a partir do primeiro óbito",
+       caption="Fonte: Johns Hopkins School of Public Health    Autor: Thiago Valentim",
+       fill="País")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-25))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                  nudge_x = 1,
+                 na.rm = TRUE,
+                size=2.5,segment.colour = "transparent")
+
+```
+
+Dinamarca e Áustria têm acumulados de óbitos com padrões similares. Nos registros diários de óbitos, acredito que as autoridades desses países já consideram que o pico já passou, sendo a Áustria por volta do trigésimo dia após o primeiro óbito e a Dinamarca por volta do vigésimo dia. Coréia do Sul, apesar das caracterísiticas da curva estarem "mascaradas" pela escala do gráfico, vem registrando poucas mortes pelo novo coronavírus. Sobre Nova Zelândia e Singapura, prefiro continuar observando o comportamento das curvas ao longo das próximas semanas. Por fim, nota-se que o Brasil está começando a "subida da curva" dos óbitos. Na última segunda-feira, e também na terça-feira, foram registrados os maiores número de óbitos em um só dia (204). Alguns especialistas justificam que esse número elevado pode ter sido causado pelo atraso no registro dos óbitos no final de semana, mas outros já defendem que isso é um indício de que a curva começou a subir de forma mais acelerada. 
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Gráfico 3
+
+ggplot(cor_obt,aes(x=dia,y=propdiaobt1m,group=País,colour=País))+geom_line(size=1.0)+
+  ylab("Óbitos para 1 milhão de habitantes")+
+  xlab("Dias a partir do primeiro óbito")+ 
+  labs(title="Figura 3: Registros diários de óbitos considerando a população dos países",
+       caption="Fonte: Johns Hopkins School of Public Health    Autor: Thiago Valentim",
+       fill="País")+facet_wrap(~País)+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-25))
+
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+##### Letalidade
+
+# Países que desejo fazer a análise
+paises <- c("Brazil","Denmark","Austria","Korea, South","New Zealand",
+            "Singapore") 
+
+# Nomemclatura que serão exibidas nas análises
+sel <- c("Brasil","Dinamarca","Áustria","Coréia do Sul","Nova Zelândia",
+         "Singapura")
+
+letalidade <- NULL
+for(i in sel){
+  a<-max(corona[corona$País==i,]$casos,na.rm=TRUE)
+  b<- max(cor_obt[cor_obt$País==i,]$obitos,na.rm=TRUE)
+  letalidade[i]<-round(100*b/a,2)
+}
+
+let <- as.vector(letalidade)
+letalidade <- data.frame(let,sel,teste1M)
+
+```
+
+### Letalidade e testes
+
+A letalidade (proporção de óbitos em relação aos casos registrados) e a quantidade de testes dos países analisados encontram-se na **Figura 4**. Nota-se que o Brasil está com uma letalidade muito alta (6,3%) quando comparado aos demais países. Sobre os testes, o Brasil apresenta uma taxa de 296 testes por 1 milhão de pessoas. Numero muito baixo quando comparado aos demais países (todos acima de 10.000 testes por 1 milhão de pessoas). Não sei até que ponto essas informações dos testes são confiáveis para o Brasil, mas estou coletando esses dados no site \url{https://www.worldometers.info/coronavirus/} que está fazendo um ótimo acompanhamento da Covid-19. Para ter uma melhor confiança sobre esses números, gostaria que eles (e também dos pacientes recuperados) fossem divulgados no site \url{https://covid.saude.gov.br/}.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+######## Gráfico 4
+
+p1<-ggplot(letalidade, aes(x=reorder(sel,desc(let)), y=let,fill=sel)) + geom_col()+
+  ylab("Letalidade (%)")+xlab("Países")+ 
+  labs(title="Fig. 4a: Letalidade da Covid-19",
+       caption= " ",
+       fill="Países")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+p2<-ggplot(letalidade, aes(x=reorder(sel,desc(teste1M)), y=teste1M,fill=sel)) + geom_col()+
+  ylab("Testes por 1 mihão de pessoas")+xlab("Países")+ 
+  labs(title="Fig. 4b: Testes para Covid-19",
+        caption="Fonte: Johns Hopkins University e Worldometer   Autor: Thiago Valentim",
+       fill="Países")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+grid.arrange(p1, p2, nrow = 1)
+
+```
+
+### Finalizando a conversa
+
+Neste post objetivei realizar uma análise descritiva dos dados sobre casos confirmados, óbitos e testes para a Covid-19. Não sou especialista em Epidemiologia, mas utilizei os meus conhecimentos de Estatística Descritiva para tentar observar caracterísiticas nas curvas que pudessem justificar as notícias que foram veiculadas sobre esses países. De maneira geral, acredito que as recomendações dadas pela Organização Mundial da Saúde, sobre testagem em massa e isolamento social, são os melhores caminhos para que o sistema de saúde dos países tenha capacidade de internar os doentes e que a Ciência tenha tempo para buscar soluções médicas para essa pandemia. Além disso, tenho ciência do grave cenário econômico que estamos vivendo e torço que as decisões que serão tomadas pelos chefes de governo sejam sempre em prol do bem comum.
+
+Por fim, gostaria que compartilhar uma das ideias da matéria do jornal britânico [*The Guardian*](https://www.theguardian.com/world/2020/apr/12/coronavirus-statistics-what-can-we-trust-and-what-should-we-ignore?CMP=share_btn_fb&fbclid=IwAR0wWpwhqDtRa5qohJyNNKTBhGmcIB_n-_lcrnhyvRoKp7WskmH4caoMSy8), que o [Professor Marcelo Bourguignon](https://sigaa.ufrn.br/sigaa/public/docente/portal.jsf?siape=1023112), da UFRN, mandou para mim. O texto contempla as falas de dois dos mais renomados estatísticos do mundo: [Sylvia Richardson](https://www.mrc-bsu.cam.ac.uk/people/in-alphabetical-order/n-to-s/sylvia-richardson/) e [Sir David Spiegelhalter](http://www.statslab.cam.ac.uk/~david/). Eles ressaltam que é tentador vincular as estatísticas de um país às medidas que eles tomaram para controlar o vírus. Cabe ressaltar que países diferem de várias formas: demografia básica, capacidade e política de teste, características dos serviços de saúde e assim por diante.
+
