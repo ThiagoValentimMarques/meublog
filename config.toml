@@ -1,4 +1,4 @@
-baseURL = "https://thiagovalentim.me"
+baseURL = "https://thiagovalentim.netlify.app/"
 theme = "hugo-coder"
 
 languagecode = "en"
