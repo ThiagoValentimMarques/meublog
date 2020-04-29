@@ -21,5 +21,7 @@ title: Publicações
 
 * [The ten most similar players - Pro Evolution Soccer 2019](https://thiago-valentim.shinyapps.io/project/)
 
+* [Reportagem sobre o Aplicativo na Inter TV Cabugi](https://globoplay.globo.com/v/8513019/programa/?s=8276s)
+
 
 
