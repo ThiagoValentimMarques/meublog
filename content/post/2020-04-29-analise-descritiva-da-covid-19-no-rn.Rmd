@@ -41,7 +41,7 @@ Todos os códigos utilizados neste post estão no [meu GitHub](https://github.co
 
 ### Casos confirmados e óbitos por Covid-19 no RN
 
-A **Figura 1** mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Rio Grande do Norte. Segundo o último boletim do Ministério da Saúde, em 28 de abril, o RN registrou 857 casos confirmados e 48 óbitos até o momento. Percebe-se que a letalidade está em 14% e, como sempre venho dizendo, isso é um forte indicativo de que há subnotificação nos casos confirmados. Mesmo assim, essas informações são úteis para perceber possíveis padrões. Por exemplo, nos registro diário de casos percebe-se que nas duas últimas semanas esse número vem oscilando, predominantemente, dentro do intervalo entre 10 e 70 casos (**Figura 2**).
+A **Figura 1** mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Rio Grande do Norte. Segundo o último boletim do Ministério da Saúde, em 28 de abril, o RN registrou 857 casos confirmados e 48 óbitos até o momento. Percebe-se que a letalidade está em 14% e, como sempre venho dizendo, isso é um forte indicativo de que há subnotificação nos casos confirmados. Mesmo assim, essas informações são úteis para perceber possíveis padrões. Por exemplo, nos registros diários de casos percebe-se que nas duas últimas semanas esse número vem oscilando, predominantemente, dentro do intervalo entre 10 e 70 casos (**Figura 2**).
 
 ```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 
@@ -92,7 +92,7 @@ dados %>%
   geom_line(aes(y = obitosAcumulados, group="",colour = "Casos Acumulados"))+
   geom_point(aes(y = obitosAcumulados, group="",colour = "Casos Acumulados"))+
   geom_point()+geom_line()+
-  scale_color_manual(labels = c("Casos confirmados", "Óbitos"),values=c("red", "blue"))+
+  scale_color_manual(labels = c("Óbitos","Casos confirmados"),values=c("red", "blue"))+
   labs(x = "Data", y = "Quantidade", colour = "",
        caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim",
        title="Figura 1: Acumulado dos casos confirmados e óbitos por Covid-19 no RN") +
@@ -114,7 +114,7 @@ dados %>%
   geom_line(aes(y = obitosNovos, group="",colour = "Casos Acumulados"))+
   geom_point(aes(y = obitosNovos, group="",colour = "Casos Acumulados"))+
   geom_point()+geom_line()+
-  scale_color_manual(labels = c("Casos confirmados", "Óbitos"),values=c("red", "blue"))+
+  scale_color_manual(labels = c("Óbitos","Casos confirmados"),values=c("red", "blue"))+
   labs(x = "Data", y = "Quantidade", colour = "",
        caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim",
        title="Figura 2: Casos confirmados e óbitos diários por Covid-19 no RN") +
@@ -222,7 +222,7 @@ mapa %>%
 
 ### Comparação dos óbitos com os demais estados do Nordeste
 
-Atualmente o Rio Grande do Norte registra 1,4 óbitos por 100 mil habitantes (**Figura 5**). Considerando a população dos estados da Região Nordeste, essa taxa fica abaixo de Pernambuco (5,48), Ceará (4,56) e Maranhão (2,11). Noata-se que Parnambuco e Ceará apresentam curvas similares e apresentam um crescimento de casos bem mais acelerado do que os demais estados do Nordeste. Achei conveninete trabalhar com os óbitos por se tratar de algo mais próximo da realidade.
+Atualmente o Rio Grande do Norte registra 1,4 óbitos por 100 mil habitantes (**Figura 5**). Considerando a população dos estados da Região Nordeste, essa taxa fica abaixo de Pernambuco (5,48), Ceará (4,56) e Maranhão (2,11). Noata-se que Parnambuco e Ceará apresentam curvas similares e apresentam um crescimento de casos bem mais acelerado do que os demais estados do Nordeste. Achei conveniente trabalhar com os óbitos por se tratar de algo mais próximo da realidade.
 
 ```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 
@@ -252,7 +252,7 @@ dados %>%
                    size=2.5,segment.colour = "transparent")
 ```
 
-Os dados do LAIS/UFRN mostram que 60% dos das condições pré-existentes presentes nos óbitos por Covid-19 no RN são formados por asma (7%), obesidade (10%), hipertensão (14%) e diabetes (29%) (**Figura 6**). Sobre a faixa etária, cerca de 70% dos óbitos são formados por pessoas com 50 anos ou mais (**Figura 7**). Quando se categoriza por sexo, 64% dos óbitos são do sexo masculino, mas quando a faixa etária é de 65 anos ou mais o número de mulheres tem sido maior (**Figura 8**). 
+Os dados do LAIS/UFRN mostram que 60% das condições pré-existentes presentes nos óbitos por Covid-19 no RN são formados por asma (7%), obesidade (10%), hipertensão (14%) e diabetes (29%) (**Figura 6**). Sobre a faixa etária, cerca de 70% dos óbitos são formados por pessoas com 50 anos ou mais (**Figura 7**). Quando se categoriza por sexo, 64% dos óbitos são do sexo masculino, mas quando a faixa etária é de 65 anos ou mais o número de mulheres tem sido maior (**Figura 8**). 
 
 ```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 
