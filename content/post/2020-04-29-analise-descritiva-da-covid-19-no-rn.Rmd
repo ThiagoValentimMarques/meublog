@@ -41,7 +41,7 @@ Todos os códigos utilizados neste post estão no [meu GitHub](https://github.co
 
 ### Casos confirmados e óbitos por Covid-19 no RN
 
-A **Figura 1** mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Rio Grande do Norte. Segundo o último boletim do Ministério da Saúde, em 28 de abril, o RN registrou 857 casos confirmados e 48 óbitos até o momento. Percebe-se que a letalidade está em 14% e, como sempre venho dizendo, isso é um forte indicativo de que há subnotificação nos casos confirmados. Mesmo assim, essas informações são úteis para perceber possíveis padrões. Por exemplo, nos registros diários de casos percebe-se que nas duas últimas semanas esse número vem oscilando, predominantemente, dentro do intervalo entre 10 e 70 casos (**Figura 2**).
+A **Figura 1** mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Rio Grande do Norte. Segundo o último boletim do Ministério da Saúde, em 28 de abril, o RN registrou 857 casos confirmados e 48 óbitos até o momento. Percebe-se que a letalidade está em 5,6% e, como sempre venho dizendo, isso é um forte indicativo de que há subnotificação nos casos confirmados. Mesmo assim, essas informações são úteis para perceber possíveis padrões. Por exemplo, nos registros diários de casos percebe-se que nas duas últimas semanas esse número vem oscilando, predominantemente, dentro do intervalo entre 10 e 70 casos (**Figura 2**).
 
 ```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 
@@ -102,7 +102,7 @@ dados %>%
         axis.title.y = element_text(margin = margin(r = 15)),
         axis.title.x = element_text(margin = margin(t = 10)))+
   annotate("text",x=2,y=790,hjust=0,vjust=0,
-           label=paste("Letalidade =","14%"),colour="red",size=4.5)
+           label=paste("Letalidade =","5,6%"),colour="red",size=4.5)
 
 ########################### GRÁFICO 2
 
