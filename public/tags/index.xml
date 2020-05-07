@@ -6,7 +6,7 @@
     <description>Recent content in Tags on THIAGO VALENTIM</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 29 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 07 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>análise descritiva</title>
       <link>/tags/an%C3%A1lise-descritiva/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/an%C3%A1lise-descritiva/</guid>
       <description></description>
@@ -23,9 +23,54 @@
     <item>
       <title>coronavírus</title>
       <link>/tags/coronav%C3%ADrus/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/coronav%C3%ADrus/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>estatística</title>
+      <link>/tags/estat%C3%ADstica/</link>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/estat%C3%ADstica/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IFRN</title>
+      <link>/tags/ifrn/</link>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/ifrn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IFZN</title>
+      <link>/tags/ifzn/</link>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/ifzn/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rio Grande do Norte</title>
+      <link>/tags/rio-grande-do-norte/</link>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rio-grande-do-norte/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>software R</title>
+      <link>/tags/software-r/</link>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/software-r/</guid>
       <description></description>
     </item>
     
@@ -44,33 +89,6 @@
       <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/r-markdown/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Rio Grande do Norte</title>
-      <link>/tags/rio-grande-do-norte/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/rio-grande-do-norte/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>software R</title>
-      <link>/tags/software-r/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/software-r/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>estatística</title>
-      <link>/tags/estat%C3%ADstica/</link>
-      <pubDate>Fri, 17 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/estat%C3%ADstica/</guid>
       <description></description>
     </item>
     
