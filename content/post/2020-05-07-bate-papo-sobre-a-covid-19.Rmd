@@ -17,12 +17,12 @@ tags:
 
 ### Introdução
 
-Os gráficos a seguir serão utilizados na live de hoje no canal do [Instagram](https://www.instagram.com/edmilsoncamposprof/) do Professor Edmilson Campos, Diretor Geral do IFRN Campus Natal - Zona Norte. No bate-papo, serão abordados os seguintes tópicos:
+Os gráficos apresentados nest post serão utilizados na live de hoje no canal do [Instagram](https://www.instagram.com/edmilsoncamposprof/) do Professor Edmilson Campos, Diretor Geral do IFRN Campus Natal - Zona Norte. No bate-papo, serão abordados os seguintes tópicos:
 
 * Características de dados epidemiológicos;
 * Situação do Brasil: casos confirmados e óbitos;
 * Padrão das curvas do acumulado de óbitos e dos óbitos diários em relação a outros países;
-* Situação do Rio Grande do Norte: acumulado, faixa etária e sexo dos potiguares que faleceram em decorrência do novo coronavírus;
+* Situação do Rio Grande do Norte: acumulado dos casos confirmados e óbitos, faixa etária e sexo dos potiguares que faleceram em decorrência do novo coronavírus;
 * Considerações finais.
 
 ### Dados
@@ -223,7 +223,7 @@ ggplotly(b,tooltip = c("x", "y"))
 ```{r, echo=FALSE,message=FALSE,warning=FALSE}
 #### Gráfico 4
 
-dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200506.csv",header=TRUE,sep=";")
+dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200507.csv",header=TRUE,sep=";")
 
 brasil <- aggregate(.~ data,dados,sum)
 
@@ -409,7 +409,7 @@ ggplotly(d,tooltip = c("x", "y"))
 
 ```{r, echo=FALSE,message=FALSE,warning=FALSE,results=FALSE}
 
-dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200506.csv",header=TRUE,sep=";")
+dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200507.csv",header=TRUE,sep=";")
 
 n <- length(dados[dados$estado=="RN",]$estado)
 
@@ -422,8 +422,8 @@ dia<-rep(substr(dados[dados$estado =="RN",]$data,6,10),9)
 
 info <- data.frame(nordeste,pop_ne,dia)
 
-hoje <- "05-06"  #deve ser inserida a data de hoje em mês-dia
-hoje2<- as.Date("06/05/2020",format="%d/%m/%y") #Data de hoje "dd/mm/aaaa"
+hoje <- "05-07"  #deve ser inserida a data de hoje em mês-dia
+hoje2<- as.Date("07/05/2020",format="%d/%m/%y") #Data de hoje "dd/mm/aaaa"
 
 dados <- as_tibble(dados)
 
@@ -487,7 +487,7 @@ m<-ggplot(mapa_br) +
   geom_sf(aes(fill = obitosAcumulados)) +
   labs(fill = "Óbitos registrados",
        title="Total Óbitos por Covid-19",
-       subtitle ="06/05/2020", 
+       subtitle ="07/05/2020", 
        caption=" ") +
   scale_fill_gradient(low="white", high="red3")+
   theme(panel.grid = element_line(colour = "grey95"),
@@ -503,7 +503,7 @@ n<-ggplot(mapa_br) +
   geom_sf(aes(fill = prop)) +
   labs(fill = "Número de óbitos por 100k hab.",
        title="Óbitos por Covid-19 (proporcional)",
-       subtitle ="06/05/2020", 
+       subtitle ="07/05/2020", 
        caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim") +
   scale_fill_gradient(low="white", high="red3")+
   theme(panel.grid = element_line(colour = "grey95"),
@@ -526,7 +526,7 @@ grid.arrange(m,n,nrow=1)
 
 #### Gráfico 9
 
-dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200506.csv",header=TRUE,sep=";")
+dados <- read.csv("C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200507.csv",header=TRUE,sep=";")
 
 n <- length(dados[dados$estado=="RN",]$estado)
 
@@ -539,8 +539,8 @@ dia<-rep(substr(dados[dados$estado =="RN",]$data,6,10),9)
 
 info <- data.frame(nordeste,pop_ne,dia)
 
-hoje <- "05-06"  #deve ser inserida a data de hoje em mês-dia
-hoje2<- as.Date("06/05/2020",format="%d/%m/%y") #Data de hoje "dd/mm/aaaa"
+hoje <- "05-07"  #deve ser inserida a data de hoje em mês-dia
+hoje2<- as.Date("07/05/2020",format="%d/%m/%y") #Data de hoje "dd/mm/aaaa"
 
 dados <- as_tibble(dados)
 
@@ -553,7 +553,7 @@ i<-dados %>%
   filter(estado %in% c("RN","PB","PE","SE","MA","CE","BA","PI","AL"))%>%
   left_join(info, c("data" = "dia","estado"="nordeste")) %>%
   filter(data %in% substr(seq(as.Date("01/04/2020",format="%d/%m/%y"),
-                              as.Date("06/05/2020",format="%d/%m/%y"),
+                              as.Date("07/05/2020",format="%d/%m/%y"),
                               by=1),6,10))%>%
   mutate(prop = 100000*(obitosAcumulados/pop_ne))%>%
   group_by(data)%>%
