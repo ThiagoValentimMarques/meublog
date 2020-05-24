@@ -34,7 +34,7 @@ Na última sexta-feira (22/05) o Brasil se tornou o segundo país do mundo com m
 * Turquia: 155,7 mil casos e 4,3 mil mortes
 * Irã: 133,5 mil casos e 7,4 mil mortes
 
-Sabe-se que no Brasil e no mundo há um cenário de incerteza sobre o real número de casos e de óbitos devido as subnotiificações, mas as informações são mais próximas da realidade quando se há uma política nacional de testagem em massa. Nesse quesito, ainda de acordo com o [Worldometers](https://www.worldometers.info/coronavirus/), o Brasil testa apenas 3.461 pessoas por 1 mihão de habitantes, ficando na última posição dentre os dez países com mais casos confirmados. O Brasil testa tão pouco que na América do Sul só está atrás do Suriname (833), Bolívia (1.270), Guiana (1.782), Argentina (2.788) e Paraguai (3.242 testes/1M pop.), enquanto que Venezuela (27.116), Perú (23.946) e Chile (23.945 testes/1M pop.) lideram o ranking sulamericano.
+Sabe-se que no Brasil e no mundo há um cenário de incerteza sobre o real número de casos e de óbitos devido as subnotiificações, mas as informações são mais próximas da realidade quando se há uma política nacional de testagem em massa. Nesse quesito, ainda de acordo com o [Worldometers](https://www.worldometers.info/coronavirus/), o Brasil testa apenas 3.461 pessoas por 1 mihão de habitantes, ficando na última posição dentre os dez países com mais casos confirmados. O Brasil testa tão pouco que na América do Sul só está atrás do Suriname (833), Bolívia (1.270), Guiana (1.782), Argentina (2.788) e Paraguai (3.242 testes/1M pop.), enquanto que Venezuela (27.116), Peru (23.946) e Chile (23.945 testes/1M pop.) lideram o ranking sulamericano.
 
 Diante do exposto, o presente post tem como objetivo realizar uma análise descritiva dos dados sobre a Covid-19 no Brasil com as informações divulgadas pelo Ministério da Saúde no dia de ontem (23/05).
 
@@ -234,7 +234,7 @@ ggplot(.,aes(x=dia,y=obitosdia,group = regiao, colour = regiao))+
 
 ### Mapas de casos e óbitos confirmados por Covid-19
 
-Ao assitir muitas reportagens e também lives (pricipalmente do [Átila Iamarino](https://www.youtube.com/channel/UCSTlOTcyUmzvhQi6F8lFi5w)) sobre o novo coronavírus, o processo de interiorização do vírus me chamou bastante atenção. Ao construir mapas com as informações do Ministério da Saúde (Figuras 6 e 7), nota-se que, de fato, o vírus está cada vez "invadindo" o interior do paí (para mais informações, consultar o [Portal Lagom Data](https://www.lagomdata.com.br/coronavirus) do Professor Marcelo Soares). Dos 5570 municípios brasileiros, 3701 (66,4%) já registraram pelo menos um caso e 1463 (26,3%) notificaram pelo menos um óbito por Covid-19. Esse processo é muito preocupante, visto que hospitais de cidades menos estruturadas não têm como tratar os pacientes com Covid-19 e tentarão transferência para centros maiores, que em muitos casos já estão colapsados. 
+Ao assitir muitas reportagens e também lives sobre o novo coronavírus, o processo de interiorização do vírus me chamou bastante atenção. Ao construir mapas com as informações do Ministério da Saúde (Figuras 6 e 7), nota-se que, de fato, o vírus está cada vez "invadindo" o interior do país (para mais informações, consultar o [Portal Lagom Data](https://www.lagomdata.com.br/coronavirus) do Professor Marcelo Soares). Dos 5570 municípios brasileiros, 3701 (66,4%) já registraram pelo menos um caso e 1463 (26,3%) notificaram pelo menos um óbito por Covid-19. Esse processo é muito preocupante, visto que hospitais de cidades menos estruturadas não têm como tratar os pacientes com Covid-19 e tentarão transferência para centros maiores, que em muitos casos já estão colapsados. 
 
 ```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
 
@@ -256,7 +256,7 @@ geral2 <- geral2%>%
   mutate(categ = cut(casosAcumulado, c(0,100, 1000, 10000, 40000)))
 
 ggplot(geral2) + geom_sf(aes(fill = categ),color = NA)+
-    scale_fill_manual(values = c("green","blue","pink","red"),
+    scale_fill_manual(values = c("green","lightblue","pink","darkblue"),
                     na.value = "white",
                     labels=c("1 a 100","101 a 1000","1001 a 10000","10001 a 37640","0"))+
     theme(panel.grid = element_line(colour = "grey90"),
@@ -288,7 +288,7 @@ geral2 <- geral2%>%
   mutate(categ2 = cut(obitosAcumulado, c(-1,0,10, 100, 500, 1000,2000,3050)))
 
 ggplot(geral2) + geom_sf(aes(fill = categ2),color = NA)+
-    scale_fill_manual(values = c("white","green","blue","brown","yellow","pink","red"),
+    scale_fill_manual(values = c("white","green","lightblue","brown","yellow","pink","darkblue"),
                     labels=c("0","1 a 10","11 a 100","101 a 500","501 a 1000",
                     "1001 a 2000","2001 a 3029"))+
     theme(panel.grid = element_line(colour = "grey90"),
