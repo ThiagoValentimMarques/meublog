@@ -1,0 +1,71 @@
+---
+title: Análise descritiva dos dados sobre a Covid-19 no Brasil
+author: Thiago Valentim
+date: '2020-05-24'
+slug: analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil
+categories:
+  - R
+tags:
+  - coronavírus
+  - pandemia
+  - Brasil
+  - estatística
+  - análise descritiva
+  - R Markdown
+---
+
+
+
+<div id="para-início-de-conversa" class="section level3">
+<h3>Para início de conversa</h3>
+<p>Na última sexta-feira (22/05) o Brasil se tornou o segundo país do mundo com mais casos confirmados do novo coronavírus. De acordo com o site <a href="https://www.worldometers.info/coronavirus/">Worldometers</a>, os sete países com mais confirmações da Covid-19 são:</p>
+<ul>
+<li>EUA: 1,667 milhão de casos e 98,7 mil mortes</li>
+<li>Brasil: 349,1 mil casos e 22,1 mil mortes</li>
+<li>Rússia: 344,5 mil casos e 3,5 mil mortes</li>
+<li>Espanha: 282,4 mil casos e 28,7 mil mortes</li>
+<li>Reino Unido: 257,2 mil casos e 36,7 mil mortes</li>
+<li>Itália: 229,3 mil casos e 32,7 mil mortes</li>
+<li>França: 182,5 mil casos e 28,2 mil mortes</li>
+<li>Alemanha: 180 mil casos e 8,4 mil mortes</li>
+<li>Turquia: 155,7 mil casos e 4,3 mil mortes</li>
+<li>Irã: 133,5 mil casos e 7,4 mil mortes</li>
+</ul>
+<p>Sabe-se que no Brasil e no mundo há um cenário de incerteza sobre o real número de casos e de óbitos devido as subnotiificações, mas as informações são mais próximas da realidade quando se há uma política nacional de testagem em massa. Nesse quesito, ainda de acordo com o <a href="https://www.worldometers.info/coronavirus/">Worldometers</a>, o Brasil testa apenas 3.461 pessoas por 1 mihão de habitantes, ficando na última posição dentre os dez países com mais casos confirmados. O Brasil testa tão pouco que na América do Sul só está atrás do Suriname (833), Bolívia (1.270), Guiana (1.782), Argentina (2.788) e Paraguai (3.242 testes/1M pop.), enquanto que Venezuela (27.116), Perú (23.946) e Chile (23.945 testes/1M pop.) lideram o ranking sulamericano.</p>
+<p>Diante do exposto, o presente post tem como objetivo realizar uma análise descritiva dos dados sobre a Covid-19 no Brasil com as informações divulgadas pelo Ministério da Saúde no dia de ontem (23/05).</p>
+</div>
+<div id="sobre-os-dados-e-análises" class="section level3">
+<h3>Sobre os dados e análises</h3>
+<p>As informações sobre o número de casos confirmados, recuperados, óbitos e pacientes em acompanhamento por causa da Covid-19 foram obtidas na <a href="https://covid.saude.gov.br/">plataforma</a> do Ministério da Saúde sobre o novo coronavírus.</p>
+<p>As análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(plotly)
+library(brazilmaps)
+library(ggspatial)</code></pre>
+<p>Os códigos em R Markdown utilizados neste post estão disponíveis no <a href="https://github.com/ThiagoValentimMarques">meu GitHub</a>.</p>
+</div>
+<div id="casos-confirmados-e-óbitos" class="section level3">
+<h3>Casos confirmados e óbitos</h3>
+<p>Já se passaram quase três meses desde o primeiro caso (26/02) de Covid-19 no Brasil. Segundo dados do Ministério da Saúde, hoje o Brasil tem 347.398 casos confirmados, 16.508 casos registrados nas últimas 24 horas, 142.587 casos recuperados, 182.798 casos em acompanhamento, 22.013 óbitos confirmados e 965 óbitos nas últimas 24 horas. Apesar dos casos e óbitos serem subnotificados, é possível verificar que o Brasil ainda se encontra na fase exponencial de aumento do número de casos (e óbitos) diários (Figuras 1-4). Isso quer dizer que ainda não atingimos o pico da pandemia no país e, de acordo com os dados, não vejo nenhuma perspectiva de que o pico dos casos esteja próximo.</p>
+<p>O departamento de estatística da UFMG vem fazendo um acompanhamento dos dados e desenvolveu um <a href="https://dest-ufmg.shinyapps.io/app_COVID19/">app</a> que faz previsões de curto prazo e de longo prazo. Segundo o estudo, mantendo os padrões observados até o momento, incluindo as condições de isolamento, o pico, com 95% de credibilidade, estará entre 6 de julho e 26 de agosto. Vale ressaltar que alterações podem causar mudanças substanciais nas previsões, como por exemplo se a testagem em massa for aplicada no país, evidenciando uma limitação do modelo por causa da má qualidade dos dados.</p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="óbitos-por-semana-epidemiológica" class="section level3">
+<h3>Óbitos por semana epidemiológica</h3>
+<p>O primeiro óbito por Covid-19 registrado no Brasil ocorreu no dia 16 de março (semana epidemiológica 12). Partindo disso, decidi fazer um acompanhamento no registro diário de óbitos considerando as semanas epidemiológicas (Figura 5). Nota-se que rotineiramente a quantidade de óbitos é menor no domingo e na segunda-feira. Em seguida esse número vai aumentando até o sábado. Uma possível justificativa para isso é a defasagem dos dados que são passados pelas prefeituras às secretarias estaduais de saúde. Mesmo assim, é possível verificar um aumento na média diária de óbitos por semana epidemiológica. Todas as semanas, sem exceção, apresentaram médias maiores que a semana anterior. Para se ter uma ideia, na semana 12, a média diária foi de 3 óbitos, enquanto que nas três últimas semanas (19, 20 e 21) as médias diárias foram de 558, 715 e 911 óbitos, respectivamente.</p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="mapas-de-casos-e-óbitos-confirmados-por-covid-19" class="section level3">
+<h3>Mapas de casos e óbitos confirmados por Covid-19</h3>
+<p>Ao assitir muitas reportagens e também lives (pricipalmente do <a href="https://www.youtube.com/channel/UCSTlOTcyUmzvhQi6F8lFi5w">Átila Iamarino</a>) sobre o novo coronavírus, o processo de interiorização do vírus me chamou bastante atenção. Ao construir mapas com as informações do Ministério da Saúde (Figuras 6 e 7), nota-se que, de fato, o vírus está cada vez “invadindo” o interior do paí (para mais informações, consultar o <a href="https://www.lagomdata.com.br/coronavirus">Portal Lagom Data</a> do Professor Marcelo Soares). Dos 5570 municípios brasileiros, 3701 (66,4%) já registraram pelo menos um caso e 1463 (26,3%) notificaram pelo menos um óbito por Covid-19. Esse processo é muito preocupante, visto que hospitais de cidades menos estruturadas não têm como tratar os pacientes com Covid-19 e tentarão transferência para centros maiores, que em muitos casos já estão colapsados.</p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2020-05-24-analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="finalizando-a-conversa" class="section level3">
+<h3>Finalizando a conversa</h3>
+<p>Com a presente análise foi possível verificar o comportamento das curvas de casos registrados e óbitos causados pelo novo coronavírus. Além disso, com a espacialização dos dados notou-se que cada vez mais esse vírus está chegando nas cidades do interior do país. De maneira geral, interpreto que o pico da pandemia ainda está muito distante. Precisamos ainda mais manter as medidas de isolamento e distanciamento social. Se o comportamento da curva continuar em ascensão, cada vez mais teremos notícias de mais e mais famílias perdendo entes queridos e também cidades decretando <em>lockdown</em> para desafogar o sistema de saúde.</p>
+</div>

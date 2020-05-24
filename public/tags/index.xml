@@ -6,7 +6,7 @@
     <description>Recent content in Tags on THIAGO VALENTIM</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 07 May 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,16 +14,25 @@
     <item>
       <title>análise descritiva</title>
       <link>/tags/an%C3%A1lise-descritiva/</link>
-      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/an%C3%A1lise-descritiva/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>Brasil</title>
+      <link>/tags/brasil/</link>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/brasil/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>coronavírus</title>
       <link>/tags/coronav%C3%ADrus/</link>
-      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/coronav%C3%ADrus/</guid>
       <description></description>
@@ -32,9 +41,27 @@
     <item>
       <title>estatística</title>
       <link>/tags/estat%C3%ADstica/</link>
-      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/estat%C3%ADstica/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pandemia</title>
+      <link>/tags/pandemia/</link>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/pandemia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R Markdown</title>
+      <link>/tags/r-markdown/</link>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/r-markdown/</guid>
       <description></description>
     </item>
     
@@ -71,24 +98,6 @@
       <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/software-r/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>pandemia</title>
-      <link>/tags/pandemia/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/pandemia/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>R Markdown</title>
-      <link>/tags/r-markdown/</link>
-      <pubDate>Wed, 29 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/r-markdown/</guid>
       <description></description>
     </item>
     

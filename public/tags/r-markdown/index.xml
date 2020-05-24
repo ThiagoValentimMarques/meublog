@@ -6,10 +6,20 @@
     <description>Recent content in R Markdown on THIAGO VALENTIM</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 29 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Análise descritiva dos dados sobre a Covid-19 no Brasil</title>
+      <link>/post/analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil/</link>
+      <pubDate>Sun, 24 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil/</guid>
+      <description>Para início de conversaNa última sexta-feira (22/05) o Brasil se tornou o segundo país do mundo com mais casos confirmados do novo coronavírus. De acordo com o site Worldometers, os sete países com mais confirmações da Covid-19 são:
+EUA: 1,667 milhão de casos e 98,7 mil mortesBrasil: 349,1 mil casos e 22,1 mil mortesRússia: 344,5 mil casos e 3,5 mil mortesEspanha: 282,4 mil casos e 28,7 mil mortesReino Unido: 257,2 mil casos e 36,7 mil mortesItália: 229,3 mil casos e 32,7 mil mortesFrança: 182,5 mil casos e 28,2 mil mortesAlemanha: 180 mil casos e 8,4 mil mortesTurquia: 155,7 mil casos e 4,3 mil mortesIrã: 133,5 mil casos e 7,4 mil mortesSabe-se que no Brasil e no mundo há um cenário de incerteza sobre o real número de casos e de óbitos devido as subnotiificações, mas as informações são mais próximas da realidade quando se há uma política nacional de testagem em massa.</description>
+    </item>
     
     <item>
       <title>Análise descritiva da Covid-19 no RN</title>
