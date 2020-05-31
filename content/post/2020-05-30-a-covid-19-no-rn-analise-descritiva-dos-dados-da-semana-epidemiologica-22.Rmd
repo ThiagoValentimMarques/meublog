@@ -1,0 +1,358 @@
+---
+title: 'A Covid-19 no RN: análise descritiva dos dados até a semana epidemiológica 22'
+author: Thiago Valentim
+date: '2020-05-30'
+slug: a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22
+categories:
+  - R
+tags:
+  - coronavírus
+  - pandemia
+  - Rio Grande do Norte
+  - análise descritiva
+  - estatística
+  - R Markdown
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+### Para início de conversa
+
+Já se passaram 80 dias desde que o diretor geral da Organização Mundial da Saúde (OMS), Tedros Adhanom, caracterizou a Covid-19 (do inglês, *coronavirus disease*) como pandemia devido a rápide disseminação geográfica da doença que teve início em Wuhan, capital da província de Hubei, na China continental. No Brasil, a primeira ação ligada à pandemia da Covid-19 foi em 9 de fevereiro com a repatriação de 34 brasileiros que viviam em Wuhan. Nos dias 26 de fevereiro e 16 de março foram registrados, respectivamente, o primeiro caso e o primeiro óbito no país.
+
+No Rio Grande do Norte, o primeiro caso foi confirmado pela Secretária de Estado da Saúde Pública (Sesap-RN), e pela Secretaria Municipal de Saúde de Natal, na noite do dia 12 de março e tratou-se de uma mulher de 24 anos com histórico de viagem à Europa (França, Itália e Áustria). O primeiro óbito foi confirmado pela Sesap-RN na noite do dia 28 de março. A vítima foi um professor universitário de 61 anos, residente no município de Mossoró e apresentava histórico de diabetes.
+
+Diante do exposto e pelo conhecido processo de interiorização da doença no RN, o objetivo geral deste post foi realizar uma análise descritiva dos dados disponibilizados pelo portal [Coronavírus Brasil](https://covid.saude.gov.br/), do Ministério da Saúde, sobre a Covid-19 no Rio Grande do Norte. 
+
+
+### Análises estatísticas
+
+As análises estatísticas foram realizadas no **software R versão 3.6.3** com o auxílio dos seguintes pacotes:
+
+```{r echo=TRUE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+library(tidyverse)
+library(brazilmaps)
+library(ggspatial)
+```
+
+Os códigos em R Markdown utilizados neste post estão disponíveis no [meu GitHub](https://github.com/ThiagoValentimMarques). 
+
+### Casos confirmados e óbitos
+
+Hoje, 30 de março de 2020, o ministério da saúde informou que o Rio Grande do Norte tem 7.402 casos confirmados (incidência de 217,13 pessoas/100 mil habitantes) e 305 óbitos por Covid-19. Enquanto muitos debatem sobre um possível afrouxamento das medidas protetivas no estado, hoje foram registrados os maiores valores em um só dia para casos e óbitos (939 e 37). Complementando essas informações com os dados do [portal coronavirus](https://covid.lais.ufrn.br/), do Laboratório de Inovação Tecnológica em Saúde (LAIS) da UFRN, são 1.410 pessoas curadas, 14.172 casos suspeitos e 12.550 casos descartados. Além disso, de acordo com o último [boletim epidemiológico da Sesap-RN](http://www.adcon.rn.gov.br/ACERVO/sesap/DOC/DOC000000000232220.PDF), há 74 óbitos em investigação, ou seja, possivelmente há bem mais óbitos do que os 305 informados oficialmente. 
+
+O número de casos confirmados (e de óbitos) não representa a quantidade de pessoas que tiveram contato com o vírus, mas sim a quantidade de pessoas que procuraram o hospital e tiveram evidência médica para serem testados. Mesmo com a subnotificação dos casos confirmados e óbitos, é possível verificar que a Covid-19 ainda está em processo de expansão no RN (Figuras 1-4). Isso quer dizer que ainda não atingimos o pico da pandemia no estado e, de acordo com os dados, não vejo nenhuma perspectiva de que este pico esteja próximo. Uma informação que me chamou atenção foi a ausência do número de casos registrados no dia 27 de março. Em uma análise futura vou informar uma possível explicação para a ausência desse dado.
+
+Sempre gosto de destacar que as minhas postagens não fazem inferências sobre o pico e o final da epidemia. Por os leitores que desejarem previsões de curto e longo prazo para o Brasil e estados da federação, recomendo os sites desenvolvidos pelos departamentos de estatística da [UFMG](https://dest-ufmg.shinyapps.io/app_COVID19/) e [UFMT]([https://andersoncso.shinyapps.io/Brasil/?fbclid=IwAR12C2MNhanA_JedgT71yTE1K8bmbOC-PvY7L75O9zecXOovfOFwJp0hsW8).
+
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+caminho <- "C:\\Users\\Thiago\\Documents\\Git\\meublog\\static\\datasets\\COVID19_20200530.csv"
+
+dados <- read.csv(caminho,header=TRUE,sep=";")
+
+names(dados)[1]<-"regiao"
+
+dados <- as_tibble(dados)
+
+RN <- dados %>%
+  filter(estado == "RN", is.na(codmun))%>%
+  mutate(data = substr(data,6,10))
+
+dia <- factor(c("SEX","SAB",
+         rep(c("DOM","SEG","TER","QUA","QUI","SEX","SAB"),11)),
+         levels=c("DOM","SEG","TER","QUA","QUI","SEX","SAB"))
+
+RN[,15] <- dia
+names(RN)[15] <- "dia"
+
+#tail(RN)
+
+obitosdia <- NULL
+obitosdia[1]<-RN$obitosAcumulado[1]
+for(i in 2:length(RN$obitosAcumulado)){
+  obitosdia[i]<-RN$obitosAcumulado[i]-RN$obitosAcumulado[i-1]
+}
+
+casosdia <- NULL
+casosdia[1]<-RN$casosAcumulado[1]
+for(i in 2:length(RN$casosAcumulado)){
+  casosdia[i]<-RN$casosAcumulado[i]-RN$casosAcumulado[i-1]
+}
+
+
+
+RN[,16]<-obitosdia;RN[,17]<-casosdia
+names(RN)[c(16,17)] <- c("obitosdia","casosdia")
+
+#media <- tapply(brasil$obitosdia,brasil$semanaEpi,mean)
+
+StatMeanLine <- ggproto("StatMeanLine", Stat,
+                        compute_group = function(data, scales) {
+                          transform(data, yintercept=mean(y))
+                        },
+                        required_aes = c("x", "y")
+)
+
+stat_mean_line <- function(mapping = NULL, data = NULL, geom = "hline",
+                           position = "identity", na.rm = FALSE, show.legend = NA, 
+                           inherit.aes = TRUE, ...) {
+  layer(
+    stat = StatMeanLine, data = data, mapping = mapping, geom = geom, 
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(na.rm = na.rm, ...)
+  )
+}
+
+```
+
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 1
+
+RN %>%
+  group_by(data)%>%
+  ggplot(.,aes(x=data,y=casosAcumulado))+geom_point()+
+  geom_line(aes(y = casosAcumulado, group="",colour = "Casos Acumulados"))+
+  geom_point(aes(y=obitosAcumulado, group="",colour = "Óbitos Acumulados"))+
+  geom_line(aes(y=obitosAcumulado, group="",colour = "Óbitos Acumulados"))+
+  geom_point(aes(y=casosAcumulado, group="",colour = "Casos Acumulados"))+
+  scale_color_manual(values=c("blue", "red"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Figura 1: Acumulado de casos e óbitos por Covid-19 no RN",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="bottom",legend.title=element_blank(), 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 8,angle=90,hjust=-0.5),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  annotate("text",x=6,y=max(RN$casosAcumulado-500),hjust=0,vjust=0,
+           label="Letalidade: 4,12%",colour="red",size=4.5)
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 2
+
+RN %>%
+  filter(casosAcumulado>0) %>%
+  group_by(data)%>%
+  ggplot(.,aes(x=data,y=casosdia,group = regiao, colour=regiao))+
+  geom_col(aes(y = casosdia),fill="blue")+
+  geom_text(aes(label = casosdia), vjust = 0.3,angle=90,
+            size=2.5,hjust=-0.3)+
+    scale_color_manual(values=c("black"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Figura 2: Casos diários de Covid-19 no RN",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="none",legend.title=element_blank(), 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 8,angle=90,hjust=-0.5),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  ylim(0,1000)
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 3
+
+RN %>%
+  filter(obitosAcumulado>0) %>%
+  group_by(data)%>%
+  ggplot(.,aes(x=data,y=obitosAcumulado,group = regiao, colour=regiao))+geom_point()+geom_line(aes(y = obitosAcumulado))+
+  scale_color_manual(values=c("red"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Figura 3: Acumulado de óbitos por Covid-19 no RN",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="none",legend.title=element_blank(), 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 8,angle=90,hjust=-0.5),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 4
+
+RN %>%
+  filter(obitosAcumulado>0) %>%
+  group_by(data)%>%
+  ggplot(.,aes(x=data,y=obitosdia,group = regiao, colour=regiao))+geom_col(aes(y = obitosdia),fill="red")+geom_text(aes(label = obitosdia), vjust = 0.3,angle=90,
+            size=3,hjust=-0.3)+
+  scale_color_manual(values=c("black"))+
+  ylab("Quantidade registrada")+xlab("Data")+ 
+  labs(title="Figura 4: Registro diário de óbitos por Covid-19 no RN",
+       caption="Fonte: Ministério da Saúde        Autor: Thiago Valentim")+
+  theme(legend.position="none",legend.title=element_blank(), 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1.0, size = 8,angle=90,hjust=-0.5),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  ylim(0,40)
+
+```
+
+### Casos e óbitos registrados por semana epidemiológica
+
+Os registros diários dos casos e óbitos confirmados por Covid-19 no RN são apresentados nas Figuras 5 e 6. É possível verificar um aumento na média diária de casos e óbitos a cada semana epidemiológica em relação à semana anterior (exceto entre as semanas 20 e 21 para óbitos). Na semana 12, a média diária de casos registrados foi de 0,7; enquanto que nas três últimas semanas (20, 21 e 22) as médias aumentaram consideravelmente, sendo 155; 227,9 e 400,4 respectivamente. Já para os óbitos, na semana 14 a média diária foi de 0,7; e nas três últimas semanas as médias também aumentaram substancialmente, sendo 7,0; 6;9 e 17,3.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 5
+
+tapply(RN$obitosdia,RN$semanaEpi,mean)
+tapply(RN$casosdia,RN$semanaEpi,mean)
+
+
+RN %>%
+  filter(casosAcumulado>0) %>%
+ggplot(.,aes(x=dia,y=casosdia,group = regiao, colour = regiao))+
+  geom_point(colour="blue")+stat_mean_line(color="black",lty=2)+
+  geom_line(size=1.1,colour="blue")+facet_wrap(~semanaEpi)+
+  theme(legend.position="bottom", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  labs(x = "Dia da semana", y = "Casos diários", colour = "",
+       caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim",
+       title="Figura 5: Casos diários por Covid-19 distribuídos por semana epidemiológica. \n A linha tracejada representa a média diária.")
+
+# Gráfico 6
+
+RN %>%
+  filter(obitosAcumulado>0) %>%
+ggplot(.,aes(x=dia,y=obitosdia,group = regiao, colour = regiao))+
+  geom_point(colour="red")+stat_mean_line(color="black",lty=2)+
+  geom_line(size=1.1,colour="red")+facet_wrap(~semanaEpi)+
+  theme(legend.position="bottom", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  labs(x = "Dia da semana", y = "Óbitos diários", colour = "",
+       caption="Fonte: Ministério da Saúde    Autor: Thiago Valentim",
+       title="Figura 6: Óbitos diários por Covid-19 distribuídos por semana epidemiológica. \n A linha tracejada representa a média diária.")
+
+```
+
+### Mapas de casos e óbitos confirmados por Covid-19
+
+No dia 11 de março a plataforma do Ministério da Saúde passou por muitas alterações. Entre elas destaco a adição de informações sobre os municípios com os respectivos códigos do Instituto Brasileiro de Geografia e Estatística (IBGE). Ao construir mapas com esses dados (Figuras 7-8), nota-se que, de fato, o vírus está cada mais presente do interior do estado. Dos 167 municípios do Rio Grande do Norte, 145 (86,8%) já registraram pelo menos um caso e 74 (44,3%) notificaram pelo menos um óbito por Covid-19. Além disso, pode-se perceber uma alta incidência de casos na Mesorregião Oeste Potiguar (Figura-9). Uma possível explicação para esse fato é a forte ligação dessa região com o estado do Ceará. Salienta-se que o Ceará apresenta as maiores quantidades de casos confirmados e óbitos da Região Nordeste. 
+
+Esse processo de interiorização do vírus é muito preocupante, visto que os enfermos de cidades menos estruturadas tentarão vagas para centros maiores o que favorece o colapso do sistema de saúde. Para observar isso, basta verificar no [Portal Covid-19](https://portalcovid19.saude.rn.gov.br/medidas/regularn-situacao-dos-leitos-do-rn/), do Governo do Estado do Rio Grande do Norte, que as rotas de regulação dos leitos têm se concentrado nos hospitais de Natal, Caicó e Mossoró.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 7
+
+RN_mapa <- dados %>%
+  filter(estado == "RN", is.na(codmun)==FALSE)%>%
+  mutate(data = substr(data,6,10))%>%
+  filter(data=="05-30")
+
+RN_mapa <- RN_mapa[-1,]
+#View(RN_mapa)
+
+mapa <- get_brmap("City",geo.filter = list(State = 24))
+names(RN_mapa)[5]<-"City"
+
+mapa<- mapa %>%
+  mutate(City = as.numeric(substr(as.character(mapa$City),1,6)))
+
+geral2 <- merge(x = mapa, y = RN_mapa, by = "City", all.x=TRUE)
+
+geral2$casosAcumulado[is.na(geral2$casosAcumulado)]<-0
+
+#max(geral2$obitosAcumulado,na.rm=TRUE)
+#max(geral2$casosAcumulado,na.rm=TRUE)
+#View(geral2)
+#length(geral2$casosAcumulado[geral2$casosAcumulado>0])/dim(geral2)[1]
+#length(geral2$obitosAcumulado[geral2$obitosAcumulado>0])/dim(geral2)[1]
+
+geral2 <- geral2%>%
+  mutate(categ = cut(casosAcumulado, c(-1,0,10, 100, 500, 2000,6000)))%>%
+  mutate(inc = (casosAcumulado/populacaoTCU2019)*100000)
+
+ggplot(geral2) + geom_sf(aes(fill = categ),size=0.1)+
+    scale_fill_manual(values = c("white","green","lightblue","pink","darkblue",
+                                 "yellow"),
+                    labels=c("0","1 a 10","11 a 100","101 a 500","501 a 2000",
+                             "2001 a 5484"))+
+    theme(panel.grid = element_line(colour = "grey90"),
+        legend.position = "bottom",
+        legend.text = element_text(size=6))+
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.08, "in"), pad_y = unit(0.2, "in"),
+                         style = north_arrow_fancy_orienteering)+
+  labs(fill = "Casos registrados",                                
+          title="Figura 7: Casos registrados com Covid-19 no RN",
+          subtitle ="30/05/2020", 
+          caption="Fonte: Ministério da Saúde         Autor: Thiago Valentim")
+ 
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+# Gráfico 8
+
+#max(geral2$obitosAcumulado,na.rm=TRUE)
+
+
+geral2$obitosAcumulado[is.na(geral2$obitosAcumulado)]<-0
+
+geral2 <- geral2%>%
+  mutate(categ2 = cut(obitosAcumulado, c(-1,0,10, 50,200)))
+
+#table(geral2$categ2)
+#View(geral2)
+
+ggplot(geral2) + geom_sf(aes(fill = categ2),size=0.1)+
+    scale_fill_manual(values = c("white","green","lightblue","pink","darkblue"),
+                    labels=c("0","1 a 10","11 a 50","51 a 185"))+
+    theme(panel.grid = element_line(colour = "grey90"),
+        legend.position = "bottom",
+        legend.text = element_text(size=6))+
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.08, "in"), pad_y = unit(0.2, "in"),
+                         style = north_arrow_fancy_orienteering)+
+  labs(fill = "Total de óbitos",                                
+          title="Figura 8: Óbitos por Covid-19 no RN",
+          subtitle ="30/05/2020", 
+          caption="Fonte: Ministério da Saúde         Autor: Thiago Valentim")
+ 
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+# Gráfico 9
+
+ggplot(geral2) + geom_sf(aes(fill = inc),size=0.1)+
+     theme(panel.grid = element_line(colour = "grey90"),
+        legend.position = "bottom",
+        legend.text = element_text(size=9))+
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  scale_fill_viridis_c(na.value = "white")+
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.08, "in"), pad_y = unit(0.2, "in"),
+                         style = north_arrow_fancy_orienteering)+
+  labs(fill = "Incidência (/100 mil hab.)",                                
+          title="Figura 9: Incidência por Covid-19 no RN",
+          subtitle ="30/05/2020", 
+          caption="Fonte: Ministério da Saúde         Autor: Thiago Valentim")
+ 
+```
+
+### Finalizando a conversa
+
+Com a presente análise foi possível verificar o comportamento das curvas de casos registrados e óbitos causados pelo novo coronavírus no Rio Grande do Norte. Ao meu ver, ainda estamos distantes do pico da pandemia. Assim como no [meu último post](https://www.thiagovalentim.me/post/analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil/) sobre os casos da Covid-19 em âmbito nacional, com a espacialização dos dados o processo de interiorização do vírus está cada vez mais evidente. 

@@ -1,0 +1,59 @@
+---
+title: 'A Covid-19 no RN: análise descritiva dos dados até a semana epidemiológica 22'
+author: Thiago Valentim
+date: '2020-05-30'
+slug: a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22
+categories:
+  - R
+tags:
+  - coronavírus
+  - pandemia
+  - Rio Grande do Norte
+  - análise descritiva
+  - estatística
+  - R Markdown
+---
+
+
+
+<div id="para-início-de-conversa" class="section level3">
+<h3>Para início de conversa</h3>
+<p>Já se passaram 80 dias desde que o diretor geral da Organização Mundial da Saúde (OMS), Tedros Adhanom, caracterizou a Covid-19 (do inglês, <em>coronavirus disease</em>) como pandemia devido a rápide disseminação geográfica da doença que teve início em Wuhan, capital da província de Hubei, na China continental. No Brasil, a primeira ação ligada à pandemia da Covid-19 foi em 9 de fevereiro com a repatriação de 34 brasileiros que viviam em Wuhan. Nos dias 26 de fevereiro e 16 de março foram registrados, respectivamente, o primeiro caso e o primeiro óbito no país.</p>
+<p>No Rio Grande do Norte, o primeiro caso foi confirmado pela Secretária de Estado da Saúde Pública (Sesap-RN), e pela Secretaria Municipal de Saúde de Natal, na noite do dia 12 de março e tratou-se de uma mulher de 24 anos com histórico de viagem à Europa (França, Itália e Áustria). O primeiro óbito foi confirmado pela Sesap-RN na noite do dia 28 de março. A vítima foi um professor universitário de 61 anos, residente no município de Mossoró e apresentava histórico de diabetes.</p>
+<p>Diante do exposto e pelo conhecido processo de interiorização da doença no RN, o objetivo geral deste post foi realizar uma análise descritiva dos dados disponibilizados pelo portal <a href="https://covid.saude.gov.br/">Coronavírus Brasil</a>, do Ministério da Saúde, sobre a Covid-19 no Rio Grande do Norte.</p>
+</div>
+<div id="análises-estatísticas" class="section level3">
+<h3>Análises estatísticas</h3>
+<p>As análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
+<pre class="r"><code>library(tidyverse)
+library(brazilmaps)
+library(ggspatial)</code></pre>
+<p>Os códigos em R Markdown utilizados neste post estão disponíveis no <a href="https://github.com/ThiagoValentimMarques">meu GitHub</a>.</p>
+</div>
+<div id="casos-confirmados-e-óbitos" class="section level3">
+<h3>Casos confirmados e óbitos</h3>
+<p>Hoje, 30 de março de 2020, o ministério da saúde informou que o Rio Grande do Norte tem 7.402 casos confirmados (incidência de 217,13 pessoas/100 mil habitantes) e 305 óbitos por Covid-19. Enquanto muitos debatem sobre um possível afrouxamento das medidas protetivas no estado, hoje foram registrados os maiores valores em um só dia para casos e óbitos (939 e 37). Complementando essas informações com os dados do <a href="https://covid.lais.ufrn.br/">portal coronavirus</a>, do Laboratório de Inovação Tecnológica em Saúde (LAIS) da UFRN, são 1.410 pessoas curadas, 14.172 casos suspeitos e 12.550 casos descartados. Além disso, de acordo com o último <a href="http://www.adcon.rn.gov.br/ACERVO/sesap/DOC/DOC000000000232220.PDF">boletim epidemiológico da Sesap-RN</a>, há 74 óbitos em investigação, ou seja, possivelmente há bem mais óbitos do que os 305 informados oficialmente.</p>
+<p>O número de casos confirmados (e de óbitos) não representa a quantidade de pessoas que tiveram contato com o vírus, mas sim a quantidade de pessoas que procuraram o hospital e tiveram evidência médica para serem testados. Mesmo com a subnotificação dos casos confirmados e óbitos, é possível verificar que a Covid-19 ainda está em processo de expansão no RN (Figuras 1-4). Isso quer dizer que ainda não atingimos o pico da pandemia no estado e, de acordo com os dados, não vejo nenhuma perspectiva de que este pico esteja próximo. Uma informação que me chamou atenção foi a ausência do número de casos registrados no dia 27 de março. Em uma análise futura vou informar uma possível explicação para a ausência desse dado.</p>
+<p>Sempre gosto de destacar que as minhas postagens não fazem inferências sobre o pico e o final da epidemia. Por os leitores que desejarem previsões de curto e longo prazo para o Brasil e estados da federação, recomendo os sites desenvolvidos pelos departamentos de estatística da <a href="https://dest-ufmg.shinyapps.io/app_COVID19/">UFMG</a> e <a href="%5Bhttps://andersoncso.shinyapps.io/Brasil/?fbclid=IwAR12C2MNhanA_JedgT71yTE1K8bmbOC-PvY7L75O9zecXOovfOFwJp0hsW8">UFMT</a>.</p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="casos-e-óbitos-registrados-por-semana-epidemiológica" class="section level3">
+<h3>Casos e óbitos registrados por semana epidemiológica</h3>
+<p>Os registros diários dos casos e óbitos confirmados por Covid-19 no RN são apresentados nas Figuras 5 e 6. É possível verificar um aumento na média diária de casos e óbitos a cada semana epidemiológica em relação à semana anterior (exceto entre as semanas 20 e 21 para óbitos). Na semana 12, a média diária de casos registrados foi de 0,7; enquanto que nas três últimas semanas (20, 21 e 22) as médias aumentaram consideravelmente, sendo 155; 227,9 e 400,4 respectivamente. Já para os óbitos, na semana 14 a média diária foi de 0,7; e nas três últimas semanas as médias também aumentaram substancialmente, sendo 7,0; 6;9 e 17,3.</p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-7-1.png" width="672" /><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+</div>
+<div id="mapas-de-casos-e-óbitos-confirmados-por-covid-19" class="section level3">
+<h3>Mapas de casos e óbitos confirmados por Covid-19</h3>
+<p>No dia 11 de março a plataforma do Ministério da Saúde passou por muitas alterações. Entre elas destaco a adição de informações sobre os municípios com os respectivos códigos do Instituto Brasileiro de Geografia e Estatística (IBGE). Ao construir mapas com esses dados (Figuras 7-8), nota-se que, de fato, o vírus está cada mais presente do interior do estado. Dos 167 municípios do Rio Grande do Norte, 145 (86,8%) já registraram pelo menos um caso e 74 (44,3%) notificaram pelo menos um óbito por Covid-19. Além disso, pode-se perceber uma alta incidência de casos na Mesorregião Oeste Potiguar (Figura-9). Uma possível explicação para esse fato é a forte ligação dessa região com o estado do Ceará. Salienta-se que o Ceará apresenta as maiores quantidades de casos confirmados e óbitos da Região Nordeste.</p>
+<p>Esse processo de interiorização do vírus é muito preocupante, visto que os enfermos de cidades menos estruturadas tentarão vagas para centros maiores o que favorece o colapso do sistema de saúde. Para observar isso, basta verificar no <a href="https://portalcovid19.saude.rn.gov.br/medidas/regularn-situacao-dos-leitos-do-rn/">Portal Covid-19</a>, do Governo do Estado do Rio Grande do Norte, que as rotas de regulação dos leitos têm se concentrado nos hospitais de Natal, Caicó e Mossoró.</p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/post/2020-05-30-a-covid-19-no-rn-analise-descritiva-dos-dados-da-semana-epidemiologica-22_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="finalizando-a-conversa" class="section level3">
+<h3>Finalizando a conversa</h3>
+<p>Com a presente análise foi possível verificar o comportamento das curvas de casos registrados e óbitos causados pelo novo coronavírus no Rio Grande do Norte. Ao meu ver, ainda estamos distantes do pico da pandemia. Assim como no <a href="https://www.thiagovalentim.me/post/analise-descritiva-dos-dados-sobre-a-covid-19-no-brasil/">meu último post</a> sobre os casos da Covid-19 em âmbito nacional, com a espacialização dos dados o processo de interiorização do vírus está cada vez mais evidente.</p>
+</div>
