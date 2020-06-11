@@ -3,7 +3,7 @@ slug: projects
 title: Publicações
 ---
 
-#### **Artigos científicos com autor ou coautor**
+#### **Artigos científicos como autor ou coautor**
 
 ##### 2020
 
