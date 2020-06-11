@@ -9,6 +9,8 @@ title: Publicações
 
 * [Environmental and biophysical controls of evapotranspiration from Seasonally Dry Tropical Forests (*Caatinga*) in the Brazilian Semiarid](https://doi.org/10.1016/j.agrformet.2020.107957). **Agricultural and Forest Meteorology**, v. 287, 107957, 2020.
 
+* [Seasonal variation in net ecosystem CO2 exchange of a Brazilian seasonally dry tropical forest](https://doi.org/10.1038/s41598-020-66415-w). **Scientific Reports**, v. 10, 9454, 2020.
+
 ##### 2019
 
 * [Closure and partitioning of the energy balance in a preserved area of a Brazilian seasonally dry tropical forest](https://doi.org/10.1016/j.agrformet.2019.03.018). **Agricultural and Forest Meteorology**. v. 271, pp. 398-412, 2019.
