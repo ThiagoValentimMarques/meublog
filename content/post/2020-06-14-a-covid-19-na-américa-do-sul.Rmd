@@ -1,0 +1,508 @@
+---
+title: A Covid-19 na América do Sul
+author: Thiago Valentim Marques
+date: '2020-06-14'
+slug: a-covid-19-na-américa-do-sul
+categories:
+  - R
+tags:
+  - coronavírus
+  - pandemia
+  - América do Sul
+  - análise descritiva
+  - R Markdown
+  - software R
+---
+
+### Para início de conversa
+
+No dia 22 de maio a Organização Mundial da Saúde, por meio do diretor do programa de emergências Michael Ryan, classificou a América do Sul como novo epicentro da pandemia de Covid-19. O diretor destacou que o Brasil é o país mais afetado da região, além de mostrar preocupação com o Peru e o Chile. Na última sexta-feira (12/06), o Brasil superou mais uma marca trágica se tornando o país com segundo maior número de mortes por Covid-19, ficando atrás apenas dos Estados Unidos. Vale lembrar que desde a última semana, o Brasil já era o segundo país do mundo com mais casos registrados (mesmo diante do baixo número de testes). 
+
+Com base nisso, resolvi coletar dados sobre os **(i)** casos confirmados e óbitos por Covid-19, **(ii)** incidência, **(iii)** mortalidade e a **(iv)** quantidade de testes que estão sendo realizados no Brasil e nos demais países da América do Sul.
+
+### Sobre os dados e as análises
+
+As informações sobre o número de casos confirmados e óbitos por Covid-19 em âmbito internacional estão sendo obtidas pelo [conjunto de dados](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases) do Johns Hopkins of Public Healt. O número de testes e a população estimada dos países foram obtidas no site [worldometers](https://www.worldometers.info/coronavirus/#countries), que é atualizado em tempo real.
+
+Todas as análises estatísticas foram realizadas no **software R versão 3.6.3** com o auxílio dos seguintes pacotes:
+
+```{r echo=TRUE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+library(tidyverse)
+library(ggrepel)
+library(gridExtra)
+library(ggspatial)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(scales)
+
+```
+
+Todos os códigos em R Markdown utilizados neste post encontram-se no meu [github](https://github.com/ThiagoValentimMarques).
+
+### Casos confirmados e óbitos por Covid-19
+
+Existem várias formas de compararar as curvas relacionadas aos dados da Covid-19. Nesta análise, considerei as séries dos casos confirmados a partir do centésimo caso e as séries dos óbitos registrados a partir do décimo óbito. Dessa forma, busquei observar e comparar os estágios da pandemia nos países sul-americanos considerando a ascensão dos números de casos e óbitos. As curvas dos casos confirmados e óbitos são apresentadas nas **Figuras 1** e **2**.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#########################################################
+#------------------ URL dos dados ----------------------#
+#########################################################
+
+# Casos confirmados
+url1 <- "https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv&filename=time_series_covid19_confirmed_global.csv" 
+
+# Óbitos 
+url2 <- "https://data.humdata.org/hxlproxy/api/data-preview.csv?url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_deaths_global.csv&filename=time_series_covid19_deaths_global.csv"
+
+#########################################################
+#-------------- Preparação dos dados -------------------#
+#########################################################
+
+casos <- read.csv(url1,header=TRUE)
+obitos <- read.csv(url2,header=TRUE)
+
+casos$Country.Region <- as.character(casos$Country.Region)
+obitos$Country.Region <- as.character(obitos$Country.Region)
+
+casos$Country.Region[108]<-"French Guiana"
+obitos$Country.Region[108]<-"French Guiana"
+
+# Países que desejo fazer a análise
+paises <- c("Brazil","Argentina","Paraguay","Uruguay","Peru","Ecuador",
+            "Colombia","Chile","Venezuela","Guyana","Suriname","Bolivia",
+            "French Guiana") 
+
+# Nomemclatura que serão exibidas nas análises
+sel <- c("Brasil","Argentina","Paraguai","Uruguai","Peru","Equador",
+         "Colômbia","Chile","Venezuela","Guiana","Suriname","Bolivia",
+         "GFrancesa")
+
+# População dos respectivos países Fonte: worldometers
+pop <- c(212488104,45175755,7128166,3473184,32948535,17629274,50856291,
+         19108331,28439335,786377,586379,11664961,298239)
+
+# Testes para 1 milhão de pessoas Fonte: worldometers
+teste1M <- c(7055,5054,6539,15220,40623,7609,9494,42913,37511,2450,1987,
+             3949,929) 
+
+##############################################################################
+################ Início da rotina para os casos ##############################
+##############################################################################
+
+casos <- casos %>%
+  filter(Country.Region %in% paises)
+
+n<-dim(casos[,-c(1,2,3,4)])[2]
+
+matriz<-matrix("NA",ncol=length(paises),nrow=n)
+matriz2<-matrix("NA",ncol=length(paises),nrow=n)
+matriz3<-matrix("NA",ncol=length(paises),nrow=n)
+j<-0
+for(i in paises){
+  N <- length(as.vector(apply(casos[casos$Country.Region=="Brazil",-c(1,2,3,4)],2,sum)))
+  valor <- as.vector(apply(casos[casos$Country.Region==i,-c(1,2,3,4)],2,sum))
+  cem <- valor[valor>=100] 
+  cem[(length(cem)+1):N] <- rep(NA_character_,(N-length(cem)))
+  cem <- as.numeric(cem)
+  last_point <- rep(NA_character_,N)
+  last_point[length(na.omit(cem))]<-sel[j+1]
+  
+  diario<-NULL
+  diario[1]<-cem[1]
+  for(k in 2:length(cem)){
+    diario[k] <- cem[k]-cem[k-1]
+  }
+
+  j<-j+1
+  matriz[,j]<-cem
+  matriz2[,j]<-last_point
+  matriz3[,j]<-diario
+  
+} 
+
+point<-as.vector(matriz2)
+casos <- as.vector(as.numeric(matriz))
+diario <- as.vector(as.numeric(matriz3))
+logcasos <- log10(casos)
+propcasos100k <- 100000*casos/rep(pop,each=n)
+propdia1m <- 1000000*diario/rep(pop,each=n)
+País <- rep(sel,each=n)
+dia <- rep(1:dim(matriz)[1],length(paises))
+corona <- data.frame(dia,País,casos,logcasos,propcasos100k,point,
+                     diario,propdia1m)
+corona <- as.tibble(corona)
+
+
+
+##############################################################################
+################# Final da rotina para os casos ##############################
+##############################################################################
+
+##############################################################################
+################ Início da rotina para os óbitos #############################
+##############################################################################
+
+obitos <- obitos %>%
+  filter(Country.Region %in% paises)
+
+n<-dim(obitos[,-c(1,2,3,4)])[2]
+
+matriz<-matrix("NA",ncol=length(paises),nrow=n)
+matriz2<-matrix("NA",ncol=length(paises),nrow=n)
+matriz3<-matrix("NA",ncol=length(paises),nrow=n)
+j<-0
+for(i in paises){
+  N <- length(as.vector(apply(obitos[obitos$Country.Region=="Brazil",-c(1,2,3,4)],2,sum)))
+  valor <- as.vector(apply(obitos[obitos$Country.Region==i,-c(1,2,3,4)],2,sum))
+  dez <- valor[valor>=10] 
+  dez[(length(dez)+1):N] <- rep(NA_character_,(N-length(dez)))
+  dez <- as.numeric(dez)
+  last_point <- rep(NA_character_,N)
+  last_point[length(na.omit(dez))]<-sel[j+1]
+  
+  diario<-NULL
+  diario[1]<-dez[1]
+  for(k in 2:length(dez)){
+    diario[k] <- dez[k]-dez[k-1]
+  }
+  
+  j<-j+1
+  matriz[,j]<-dez
+  matriz2[,j]<-last_point
+  matriz3[,j]<-diario
+  
+} 
+
+point<-as.vector(matriz2)
+obitos <- as.vector(as.numeric(matriz))
+diario <- as.vector(as.numeric(matriz3))
+logobitos <- log10(obitos)
+propobt100k <- 100000*obitos/rep(pop,each=n)
+propdiaobt1m <- 1000000*diario/rep(pop,each=n)
+País <- rep(sel,each=n)
+dia <- rep(1:dim(matriz)[1],length(paises))
+cor_obt <- data.frame(dia,País,obitos,logobitos,propobt100k,point,
+                      diario,propdiaobt1m)
+cor_obt <- as.tibble(cor_obt)
+
+##############################################################################
+################  Final da rotina para os óbitos  ############################
+##############################################################################
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 1
+
+point <- format_format(big.mark = " ", decimal.mark = ",", scientific = FALSE)
+
+
+ggplot(corona,aes(x=dia,y=casos,group=País,colour=País))+
+  geom_line(size=1.2)+
+  ylab("Casos confirmados")+
+  xlab("Dias a partir do centésimo caso")+ 
+  labs(title="Figura 1: Acumulado de casos com Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  scale_y_continuous(labels = point)+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-45))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.3,segment.colour = "transparent")
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+#### Gráfico 2
+
+ggplot(cor_obt,aes(x=dia,y=obitos,group=País,colour=País))+geom_line(size=1.2)+
+  ylab("Óbitos registrados")+xlab("Dias a partir do décimo óbito")+ 
+  labs(title="Figura 2: Acumulado de óbitos por Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+    scale_y_continuous(labels = point)+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-45))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")
+
+```
+
+Pelo fato do Brasil apresentar bem mais casos do que os demais países, nota-se que apenas o padrões das curvas de Brasi, Peru e Chile são mais perceptíveis, visto que a escala mascara o comportamento das demais curvas. Para solucionar esse problema, vou apresentar os mesmos dados na escala logarítmica (**Figuras 3** e **4**). 
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 3
+
+point <- format_format(big.mark = " ", decimal.mark = ",", scientific = FALSE)
+
+
+ggplot(corona,aes(x=dia,y=log10(casos),group=País,colour=País))+
+  geom_line(size=1.2)+
+  ylab("Casos confirmados (escala log10)")+
+  xlab("Dias a partir do centésimo caso")+ 
+  labs(title="Figura 3: Acumulado de casos com Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  scale_y_continuous(breaks = 2:6,
+                     labels=c("100","1000","10000","100000","1000000"))+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-45))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.3,segment.colour = "transparent")
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 4
+
+ggplot(cor_obt,aes(x=dia,y=log10(obitos),group=País,colour=País))+geom_line(size=1.2)+
+  ylab("Óbitos registrados (escala log10)")+xlab("Dias a partir do décimo óbito")+ 
+  labs(title="Figura 4: Acumulado de óbitos por Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  scale_y_continuous(breaks = 1:4,
+                     labels=c("10","100","1000","10000"))+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-45))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")
+
+```
+
+Aqui no Brasil tem-se falado muito sobre o chamado "pico" da doença. O pico dos casos pode ser interpretado como o dia em que se teve o maior registro de casos. De maneira geral, a partir desse dia o número de casos começa a diminuir gradativamente até que se chegue a fase de controle sobre o vírus. O mesmo é válido para os óbitos. Para este post não ficar tão carregado de gráficos, resolvi mostrar o acumulado de casos diários (fora de escala, só para observar os padrões) para seis países (**Figura 6**). Observa-se que Argentina, Brasil e Chile têm uma oscilação na quantidade de casos diários e uma tendência de crescimento. Já Paraguai e Uruguai também oscilam, mas há uma impressão de que está havendo um certo controle sobre os casos. Em relação ao Peru, prefiro esperar mais um pouco, visto que em dois dos últimos dias nenhum caso foi contabilizado por algum motivo que foge da minha explicação.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 5
+
+point <- format_format(big.mark = " ", decimal.mark = ",", scientific = FALSE)
+
+filtro <- corona %>%
+  filter(País %in% c("Brasil","Chile","Argentina","Peru","Uruguai","Paraguai"))
+
+ggplot(filtro,aes(x=dia,y=diario))+ geom_line(size=1.0)+facet_wrap(vars(País),
+                            scales="free_y",ncol=2)+
+  ylab("Casos confirmados")+
+  xlab("Dias a partir do centésimo caso")+ 
+  labs(title="Figura 5: Registro diário de casos com Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-45))
+ 
+
+```
+
+### Incidência e mortalidade
+
+Incluir a população dos países é considerada uma boa abordagem quando o intuito for realizar comparações (deixo claro que há muitas características que podem diferenciar o que está havendo nos países, como testagem, densidade demográfica, clima, cultura dos países, entre outras). Desse modo, definem-se **taxa de incidência**, como 100.000 vezes a razão entre o número de casos confirmados e a população do país; e **taxa de mortalidade**, como 100.000 vezes a razão entre o número de mortes registradas e a população do país). Essas taxas são apresentadas nas **Figuras 6** e **7** e espacializadas na **Figura 8**.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 6
+ggplot(corona,aes(x=dia,y=propcasos100k,group=País,colour=País))+geom_line(size=1.2)+
+  ylab("casos confirmados para cada 100 mil habitantes")+xlab("Dias a partir do centésimo caso")+ 
+  labs(title="Figura 6: Evolução da taxa de incidência da Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-25))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")
+
+```
+
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+
+#### Gráfico 7
+ggplot(cor_obt,aes(x=dia,y=propobt100k,group=País,colour=País))+geom_line(size=1.2)+
+  ylab("Óbitos registrados para cada 100 mil habitantes")+xlab("Dias a partir do décimo óbito")+ 
+  labs(title="Figura 7: Evolução da taxa de mortalidade da Covid-19",
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim",
+       fill="País")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=0,hjust=0.5),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))+
+  coord_cartesian(xlim = c(0,dim(matriz)[1]-25))+
+  geom_label_repel(aes(label = toupper(substr(point,1,3))),
+                   nudge_x = 1,
+                   na.rm = TRUE,
+                   size=2.5,segment.colour = "transparent")
+
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+#######################################################################################
+##########################    MAPA     ################################################
+#######################################################################################
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+amer_sul <- world %>%
+  filter(name %in% c(paises,"France"))
+
+amer_sul$name[7]<-"French Guiana"
+names(amer_sul)[18]<-"País"
+
+#fazendo um merge#
+dados_prop <- na.omit(corona)
+dados_prop[,2]<-paises
+
+geral <- merge(x = amer_sul, y = dados_prop, by = "País", all.x=TRUE)
+
+dados_obt <- na.omit(cor_obt)
+
+geral <- merge(x = geral, y = dados_obt, by = "point", all.x=TRUE)
+
+geral$propobt100k[7]<-0.335 #Óbitos da Guiana Francesa
+geral$propobt100k[11]<-0.512 #Óbitos do Suriname
+
+##################
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+### Mapa de Incidência
+
+a<-ggplot(geral) +
+  geom_sf(aes(fill = propcasos100k)) +
+  labs(fill = "Casos por 100k hab.",
+       title="Fig. 8a: Taxa de Incidência",
+       subtitle ="Covid-19 na América do Sul em 13/06",
+       caption=" ") +
+  scale_fill_gradient(low="white", high="red3")+
+  geom_sf_text(aes(label = point), colour = "black",size=2.5)+
+  geom_text(aes(x=-45,y=6,label="Guiana Francesa"), colour = "gray30",size=2)+
+  theme(panel.grid = element_line(colour = "grey95"),
+        legend.position = "bottom",
+        legend.text = element_text(size=6))+
+  annotation_scale(location = "bl", width_hint = 0.50) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.08, "in"), pad_y = unit(0.3, "in"),
+                         style = north_arrow_fancy_orienteering)+
+  xlab("Longitude") + ylab("Latitude")+
+  coord_sf(xlim = c(-95, -35), ylim = c(-61, 10))
+
+### Mapa de Óbitos
+
+ b<-ggplot(geral) +
+  geom_sf(aes(fill = propobt100k)) +
+  labs(fill = "Óbitos por 100k hab.",
+       title="Fig. 8b: Taxa de mortalidade",
+       subtitle ="Covid-19 na América do Sul em 13/06", 
+       caption="Fonte: Johns Hopkins University    Autor: Thiago Valentim") +
+  scale_fill_gradient(low="white", high="red3")+
+    geom_sf_text(aes(label = point), colour = "black",size=2.5)+
+    geom_text(aes(x=-45,y=6,label="Guiana Francesa"), colour = "gray30",size=2)+
+  theme(panel.grid = element_line(colour = "grey95"),
+        legend.position = "bottom",
+        legend.text = element_text(size=6))+
+  annotation_scale(location = "bl", width_hint = 0.50) +
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         pad_x = unit(0.08, "in"), pad_y = unit(0.3, "in"),
+                         style = north_arrow_fancy_orienteering)+
+   xlab("Longitude") + ylab("Latitude")+
+  coord_sf(xlim = c(-95, -35), ylim = c(-61, 10))
+ 
+ grid.arrange(a,b,nrow=1)
+ 
+```
+
+### Testagem e letalidade
+
+Observando as **Figuras 6** e **7** percebe-se que Chile e Peru lideram os números relacionados a taxa de incidência, mas quando se considera a mortalidade, Equador e Brasil, além de Chile e Peru, têm os maiores valores. E qual pode ser o motivo disso? Eu respondo: o número de testes. Chile (42.913) e Peru (40.623 testes por 1 milhão de pessoas) são os países que proporcionalmente mais testam na América do Sul e isto implica em mais casos confirmados, facilitando políticas públicas, já que há um melhor mapeamento da pandemia, visto que a quantidade de pessoas infectadas é um número desconhecido. Na contramão, Equador (7.609) e Brasil (7.055 testes por 1 milhão de pessoas) não fazem tantos testes e isso acarreta em muita subnotificação, ou seja, muitas pessoas tiveram contato com o vírus e não sabem. Esse meu argumento é evidenciado pela taxa de mortalidade, pois mesmo existindo subnotificação de óbitos, os valores são bem mais próximos da realidade. Inclusive a menor testagem pode acarretar em maior letalidade, como se pode perceber na **Figura 9**. Ressalto que Guiana Francesa e Suriname não estão nos gráficos porque apresentaram menos de 10 óbitos até o momento.
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+sel <- c("Brasil","Argentina","Paraguai","Uruguai","Peru","Equador",
+         "Colômbia","Chile","Venezuela","Guiana","Bolivia")
+
+letalidade <- NULL
+for(i in sel){
+  a<-max(corona[corona$País==i,]$casos,na.rm=TRUE)
+  b<- max(cor_obt[cor_obt$País==i,]$obitos,na.rm=TRUE)
+  letalidade[i]<-round(100*b/a,2)
+}
+
+# Testes para 1 milhão de pessoas Fonte: worldometers
+teste1M <- c(7055,5054,6539,15220,40623,7609,9494,42913,37511,2450,
+             3949) 
+
+let <- as.vector(letalidade)
+letalidade <- data.frame(let,sel,teste1M)
+```
+
+```{r echo=FALSE, comment=FALSE, warning=FALSE, results=FALSE,message=FALSE}
+######## Gráfico 9
+
+p1<-ggplot(letalidade, aes(x=reorder(sel,desc(let)), y=let,fill=sel)) + geom_col()+
+  ylab("Letalidade (%)")+xlab("Países")+ 
+  labs(title="Fig. 9a: Letalidade da Covid-19",
+       caption= " ",
+       fill="Países")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+p2<-ggplot(letalidade, aes(x=reorder(sel,desc(teste1M)), y=teste1M,fill=sel)) + geom_col()+
+  ylab("Testes por 1 mihão de pessoas")+xlab("Países")+ 
+  labs(title="Fig. 9b: Testes para Covid-19",
+       caption="Fonte: Johns Hopkins Univ. e Worldometer   Autor: Thiago Valentim",
+       fill="Países")+
+  theme(legend.position="none", 
+        axis.text.y = element_text(vjust=0.8, size = 12),
+        axis.text.x = element_text(vjust=1, size = 10,angle=60,hjust=1),
+        axis.title.y = element_text(margin = margin(r = 15)),
+        axis.title.x = element_text(margin = margin(t = 10)))
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
+### Finalizando a conversa
+
+Um dos meus propósitos com essas análises é mostrar o potencial da estatística na simplificação da apresentação dos dados. Notem que em nenhum momento utilizei modelos de previsão. Eu somente fiz uso de ferramentas que me auxiliassem na análise descritiva dos dados (destaco a programação em linguagem R). Sobre a análise realizada, enfatizo que as palavras de Michael Ryan fazem total sentido. A maioria dos países da América do Sul não mostram indicativos de que chegaram ao pico da pandemia e isto quer dizer que os números de casos e óbitos não param de crescer. Destaco uma maior preocupação com Equador, Brasil, Peru e Chile que apresentam as maiores taxas de mortalidade da região. A Argentina também merece atenção, pois nas últimas semanas o número de casos registrados (e óbitos) por dia está aumentando cada vez mais. Ressalto que mesmo considerando a economia muito importante (e é para ser considerada mesmo), acho que se falar de flexibilização das medidas restritivas enquanto o número de casos continuar aumentando é um absurdo. 
+
+Por fim, gostaria de evidenciar dois países que estão conseguindo controlar a Covid-19: Paraguai e Uruguai. O Paraguai aplicou medidas de rígidas de quarentena logo após a confirmação do segundo caso de contágio. No Uruguai a população acatou e, de maneira geral, cumpriu as medidas restritivas. Claro que esse não é o único motivo que pode justificar a diferença nos números, mas no atual estágio de não se ter vacina nem tratamento contra o novo coronavírus, recomendo serguir as orientações da OMS: distanciamento e isolamento social; e se precisar sair para algum lugar usar a máscara e lavar as mãos sempre que necessário.
