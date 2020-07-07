@@ -120,16 +120,23 @@
 <p>Eu tive a motivação para realizar análises descritivas diante da grande quantidade de dados da Covid-19. Comecei fazendo posts dos meus gráficos nas redes sociais, mas confesso que do modo que estava sendo feito não era a forma ideal para a transmissão dos meus intentos. Os colegas Professores <a href="https://github.com/diegosilveiracn?tab=followers">Diego Nascimento</a> e <a href="http://historianosdetalhes.com.br/">Sérgio Trindade</a>, do IFRN, e o Professor <a href="https://marcusnunes.me/">Marcus Nunes</a>, da UFRN, foram os principais incentivadores para a criação deste blog e aproveito o momento para agradecê-los. Em particular, o Professor <a href="https://marcusnunes.me/">Marcus Nunes</a> me ajudou bastante no esclarecimento dos meus questionamentos sobre a implementação do blog via R Markdown, o framework Hugo e o Netlify. E, claro, agradeço a minha esposa Alyne Rayane pela paciência nas minhas longas jornadas diante da tela do computador.</p>
 
     
-    <div id="disqus_thread"></div>
-<script>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
 (function() {
-var d = document, s = d.createElement('script');
-s.src = 'https://www-thiagovalentim-me.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'www-thiagovalentim-me';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
   </article>
 </section>
 
