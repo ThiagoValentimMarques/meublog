@@ -107,7 +107,67 @@
 
       <div class="content">
         
-  <div id="disqus_thread"></div>
+  <section class="container page">
+  <article>
+    <header>
+      <h1>A Covid-19 na América do Sul</h1>
+    </header>
+
+    
+
+
+<div id="para-início-de-conversa" class="section level3">
+<h3>Para início de conversa</h3>
+<p>No dia 22 de maio a Organização Mundial da Saúde, por meio do diretor do programa de emergências Michael Ryan, classificou a América do Sul como novo epicentro da pandemia de Covid-19. O diretor destacou que o Brasil é o país mais afetado da região, além de mostrar preocupação com o Peru e o Chile. Na última sexta-feira (12/06), o Brasil superou mais uma marca trágica se tornando o país com segundo maior número de mortes por Covid-19, ficando atrás apenas dos Estados Unidos. Vale lembrar que desde a última semana, o Brasil já era o segundo país do mundo com mais casos registrados (mesmo diante do baixo número de testes).</p>
+<p>Com base nisso, resolvi coletar dados sobre os <strong>(i)</strong> casos confirmados e óbitos por Covid-19, <strong>(ii)</strong> incidência, <strong>(iii)</strong> mortalidade e a <strong>(iv)</strong> quantidade de testes que estão sendo realizados no Brasil e nos demais países da América do Sul.</p>
+</div>
+<div id="sobre-os-dados-e-as-análises" class="section level3">
+<h3>Sobre os dados e as análises</h3>
+<p>As informações sobre o número de casos confirmados e óbitos por Covid-19 em âmbito internacional estão sendo obtidas pelo <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">conjunto de dados</a> do Johns Hopkins of Public Healt. O número de testes e a população estimada dos países foram obtidas no site <a href="https://www.worldometers.info/coronavirus/#countries">worldometers</a>, que é atualizado em tempo real.</p>
+<p>Todas as análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
+<pre class="r"><code>library(tidyverse)
+library(ggrepel)
+library(gridExtra)
+library(ggspatial)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(scales)</code></pre>
+<p>Todos os códigos em R Markdown utilizados neste post encontram-se no meu <a href="https://github.com/ThiagoValentimMarques">github</a>.</p>
+</div>
+<div id="casos-confirmados-e-óbitos-por-covid-19" class="section level3">
+<h3>Casos confirmados e óbitos por Covid-19</h3>
+<p>Existem várias formas de compararar as curvas relacionadas aos dados da Covid-19. Nesta análise, considerei as séries dos casos confirmados a partir do centésimo caso e as séries dos óbitos registrados a partir do décimo óbito. Dessa forma, busquei observar e comparar os estágios da pandemia nos países sul-americanos considerando a ascensão dos números de casos e óbitos. As curvas dos casos confirmados e óbitos são apresentadas nas <strong>Figuras 1</strong> e <strong>2</strong>.</p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Pelo fato do Brasil apresentar bem mais casos do que os demais países, nota-se que apenas o padrões das curvas de Brasi, Peru e Chile são mais perceptíveis, visto que a escala mascara o comportamento das demais curvas. Para solucionar esse problema, vou apresentar os mesmos dados na escala logarítmica (<strong>Figuras 3</strong> e <strong>4</strong>).</p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Aqui no Brasil tem-se falado muito sobre o chamado “pico” da doença. O pico dos casos pode ser interpretado como o dia em que se teve o maior registro de casos. De maneira geral, a partir desse dia o número de casos começa a diminuir gradativamente até que se chegue a fase de controle sobre o vírus. O mesmo é válido para os óbitos. Para este post não ficar tão carregado de gráficos, resolvi mostrar o acumulado de casos diários (fora de escala, só para observar os padrões) para seis países (<strong>Figura 5</strong>). Observa-se que Argentina, Brasil e Chile têm uma oscilação na quantidade de casos diários e uma tendência de crescimento. Já Paraguai e Uruguai também oscilam, mas há uma impressão de que está havendo um certo controle sobre os casos. Em relação ao Peru, prefiro esperar mais um pouco, visto que em dois dos últimos dias nenhum caso foi contabilizado por algum motivo que foge da minha explicação.</p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="incidência-e-mortalidade" class="section level3">
+<h3>Incidência e mortalidade</h3>
+<p>Incluir a população dos países é considerada uma boa abordagem quando o intuito for realizar comparações (deixo claro que há muitas características que podem diferenciar o que está havendo nos países, como testagem, densidade demográfica, clima, cultura dos países, entre outras). Desse modo, definem-se <strong>taxa de incidência</strong>, como 100.000 vezes a razão entre o número de casos confirmados e a população do país; e <strong>taxa de mortalidade</strong>, como 100.000 vezes a razão entre o número de mortes registradas e a população do país). Essas taxas são apresentadas nas <strong>Figuras 6</strong> e <strong>7</strong> e espacializadas na <strong>Figura 8</strong>.</p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="testagem-e-letalidade" class="section level3">
+<h3>Testagem e letalidade</h3>
+<p>Observando as <strong>Figuras 6</strong> e <strong>7</strong> percebe-se que Chile e Peru lideram os números relacionados a taxa de incidência, mas quando se considera a mortalidade, Equador e Brasil, além de Chile e Peru, têm os maiores valores. E qual pode ser o motivo disso? Eu respondo: o número de testes. Chile (42.913) e Peru (40.623 testes por 1 milhão de pessoas) são os países que proporcionalmente mais testam na América do Sul e isto implica em mais casos confirmados, facilitando políticas públicas, já que há um melhor mapeamento da pandemia, visto que a quantidade de pessoas infectadas é um número desconhecido. Na contramão, Equador (7.609) e Brasil (7.055 testes por 1 milhão de pessoas) não fazem tantos testes e isso acarreta em muita subnotificação, ou seja, muitas pessoas tiveram contato com o vírus e não sabem. Esse meu argumento é evidenciado pela taxa de mortalidade, pois mesmo existindo subnotificação de óbitos, os valores são bem mais próximos da realidade. Inclusive a menor testagem pode acarretar em maior letalidade, como se pode perceber na <strong>Figura 9</strong>. Ressalto que Guiana Francesa e Suriname não estão nos gráficos porque apresentaram menos de 10 óbitos até o momento.</p>
+<p><img src="/post/2020-06-14-a-covid-19-na-américa-do-sul_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="finalizando-a-conversa" class="section level3">
+<h3>Finalizando a conversa</h3>
+<p>Um dos meus propósitos com essas análises é mostrar o potencial da estatística na simplificação da apresentação dos dados. Notem que em nenhum momento utilizei modelos de previsão. Eu somente fiz uso de ferramentas que me auxiliassem na análise descritiva dos dados (destaco a programação em linguagem R). Sobre a análise realizada, enfatizo que as palavras de Michael Ryan fazem total sentido. A maioria dos países da América do Sul não mostram indicativos de que chegaram ao pico da pandemia e isto quer dizer que os números de casos e óbitos não param de crescer. Destaco uma maior preocupação com Equador, Brasil, Peru e Chile que apresentam as maiores taxas de mortalidade da região. A Argentina também merece atenção, pois nas últimas semanas o número de casos registrados (e óbitos) por dia está aumentando cada vez mais. Ressalto que mesmo considerando a economia muito importante (e é para ser considerada mesmo), acho que se falar de flexibilização das medidas restritivas enquanto o número de casos continuar aumentando é um absurdo.</p>
+<p>Por fim, gostaria de evidenciar dois países que estão conseguindo controlar a Covid-19: Paraguai e Uruguai. O Paraguai aplicou medidas de rígidas de quarentena logo após a confirmação do segundo caso de contágio. No Uruguai a população acatou e, de maneira geral, cumpriu as medidas restritivas. Claro que esse não é o único motivo que pode justificar a diferença nos números, mas no atual estágio de não se ter vacina nem tratamento contra o novo coronavírus, recomendo serguir as orientações da OMS: distanciamento e isolamento social; e se precisar sair para algum lugar usar a máscara e lavar as mãos sempre que necessário.</p>
+</div>
+
+  </article>
+</section>
+
+<div id="disqus_thread"></div>
 <script>
 
 
