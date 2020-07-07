@@ -48,12 +48,12 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     maxSeeAlsoItems = 5
 
     # Custom CSS
-    custom_css = []
+     custom_css = []
     #custom_css = ["css/custom.css"]
 
     # Custom JS
     custom_js = []
-
+    
 # If you want to use fathom(https://usefathom.com) for analytics, add this section
 [params.fathomAnalytics]
     siteID = "ABCDE"
