@@ -109,59 +109,27 @@
 
       <div class="content">
         
-  <section class="container page">
-  <article>
-    <header>
-      <h1>Como alguns países estão lidando com a Covid-19</h1>
-    </header>
-
-    
+  <div id="disqus_thread"></div>
+<script>
 
 
-<div id="para-início-de-conversa" class="section level3">
-<h3>Para início de conversa</h3>
-<p>Nas últimas semanas tenho lido matérias de jornais sobre alguns países diante da pandemia do novo coronavírus. Por exemplo:</p>
-<ul>
-<li><a href="https://g1.globo.com/bemestar/coronavirus/noticia/2020/03/16/coronavirus-o-que-esta-por-tras-do-sucesso-da-coreia-do-sul-para-salvar-vidas-em-meio-a-pandemia.ghtml">Coronavírus: o que está por trás do sucesso da Coreia do Sul para salvar vidas em meio à pandemia</a>;</li>
-<li><a href="https://www.otempo.com.br/coronavirus/dinamarca-e-2-pais-europeu-a-anunciar-relaxamento-de-medidas-contra-coronavirus-1.2318578">Dinamarca é 2º país europeu a anunciar relaxamento de medidas contra coronavírus</a>;</li>
-<li><a href="https://agenciabrasil.ebc.com.br/esportes/noticia/2020-04/austria-libera-treinos-de-futebol-em-clubes-de-1a-e-2a-divisoes">Áustria libera treinos de futebol em clubes de 1ª e 2ª divisões</a>;</li>
-<li><a href="https://veja.abril.com.br/ciencia/como-a-nova-zelandia-tornou-se-modelo-a-ser-seguido-na-pandemia/">Como a Nova Zelândia tornou-se modelo a ser seguido na pandemia</a>;</li>
-<li><a href="https://noticias.uol.com.br/ultimas-noticias/bbc/2020/04/12/a-volta-do-coronavirus-a-cingapura-pais-que-era-exemplo-no-combate-a-doenca.htm">A volta do coronavírus a Singapura, país que era ‘exemplo’ no combate à doença</a>.</li>
-</ul>
-<p>Diante disso, resolvi coletar dados sobre os <strong>(i)</strong> casos confirmados e óbitos por Covid-19, <strong>(ii)</strong> letalidade e a <strong>(iii)</strong> quantidade de testes que estão sendo realizados no Brasil e nos países mencionados nas matérias para realizar uma análise descritiva dos dados.</p>
-</div>
-<div id="sobre-os-dados-e-as-análises" class="section level3">
-<h3>Sobre os dados e as análises</h3>
-<p>As informações sobre o número de casos confirmados, óbitos e pacientes recuperados da Covid-19 em âmbito internacional estão sendo obtidas pelo <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">conjunto de dados</a> do Johns Hopkins of Public Healt. Todas as análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
-<pre class="r"><code>library(tidyverse)
-library(ggrepel)
-library(gridExtra)</code></pre>
-<p>Todos os códigos utilizados neste post encontram-se no meu <a href="https://github.com/ThiagoValentimMarques">github</a>.</p>
-</div>
-<div id="casos-confirmados-e-óbitos-por-covid-19" class="section level3">
-<h3>Casos confirmados e óbitos por Covid-19</h3>
-<p>Os acumulados dos casos registrados no Brasil (BRA), Áustria (AUS), Coréia do Sul (COR), Dinamarca (DIN), Singapura (SIN) e Nova Zelândia são apresentados na <strong>Figura 1</strong>. Para que a análise seja mais justa, decidi utilizar a incidência do vírus (proporção entre os casos e a população do país) aos invés dos números absolutos. A curva da Coréia do Sul apresenta forma de “S”, que é padrão para dados epidemiológicos. Nesse país já teve o início, o pico e agora estão na fase final com uma quantidade mais ou menos estável de casos. Vale ressaltar que a principal estratégia da Coréia do Sul para enfrentar a pandemia foram os diagnósticos massivos para a doença, obtidos por uma política de testagem em massa.</p>
-<p><img src="/post/2020-04-16-como-alguns-paises-estao-lidando-com-a-covid-19_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Dentre os demais países, só enxergo a Nova Zelândia que possa estar no início da estabilidade nos casos confirmados. Sobre Áustria e Dinamarca, prefiro estudar o comportamento das curvas nas próximas semanas. Singapura, que já foi um país “modelo” no controle da Covid-19, está com um acelerado crescimento nos casos confirmados. Sobre o Brasil, mesmo com o problema dos casos confirmados serem subnotificados, imagino que a campanha pelo isolamento social aliada com o fato do país ter dimensões continentais estão fazendo a subida da curva não ser tão acelerada.</p>
-<p>Os dados sobre óbitos naturalmente devem ser mais próximos da quantidade real quando conparado com os casos confirmados. Sei que “atrasos” no registro de alguns casos não irão significar que todos os óbitos registrados em um dia ocorreram efetivamente neste mesmo dia, mas entendo que esses números são bem mais realistas do que o número de casos confirmados. As <strong>Figuras 2</strong> e <strong>3</strong> representam o acumulado de óbitos (proporcional com a população dos países) e o registro diário de óbitos, respectivamente.</p>
-<p><img src="/post/2020-04-16-como-alguns-paises-estao-lidando-com-a-covid-19_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>Dinamarca e Áustria têm acumulados de óbitos com padrões similares. Nos registros diários de óbitos, acredito que as autoridades desses países já consideram que o pico já passou, sendo a Áustria por volta do trigésimo dia após o primeiro óbito e a Dinamarca por volta do vigésimo dia. Coréia do Sul, apesar das caracterísiticas da curva estarem “mascaradas” pela escala do gráfico, vem registrando poucas mortes pelo novo coronavírus. Sobre Nova Zelândia e Singapura, prefiro continuar observando o comportamento das curvas ao longo das próximas semanas. Por fim, nota-se que o Brasil está começando a “subida da curva” dos óbitos. Na última segunda-feira, e também na terça-feira, foram registrados os maiores número de óbitos em um só dia (204). Alguns especialistas justificam que esse número elevado pode ter sido causado pelo atraso no registro dos óbitos no final de semana, mas outros já defendem que isso é um indício de que a curva começou a subir de forma mais acelerada.</p>
-<p><img src="/post/2020-04-16-como-alguns-paises-estao-lidando-com-a-covid-19_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-</div>
-<div id="letalidade-e-testes" class="section level3">
-<h3>Letalidade e testes</h3>
-<p>A letalidade (proporção de óbitos em relação aos casos registrados) e a quantidade de testes dos países analisados encontram-se na <strong>Figura 4</strong>. Nota-se que o Brasil está com uma letalidade muito alta (6,3%) quando comparado aos demais países. Sobre os testes, o Brasil apresenta uma taxa de 296 testes por 1 milhão de pessoas. Numero muito baixo quando comparado aos demais países (todos acima de 10.000 testes por 1 milhão de pessoas). Não sei até que ponto essas informações dos testes são confiáveis para o Brasil, mas estou coletando esses dados no site  que está fazendo um ótimo acompanhamento da Covid-19. Para ter uma melhor confiança sobre esses números, gostaria que eles (e também dos pacientes recuperados) fossem divulgados no site .</p>
-<p><img src="/post/2020-04-16-como-alguns-paises-estao-lidando-com-a-covid-19_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-</div>
-<div id="finalizando-a-conversa" class="section level3">
-<h3>Finalizando a conversa</h3>
-<p>Neste post objetivei realizar uma análise descritiva dos dados sobre casos confirmados, óbitos e testes para a Covid-19. Não sou especialista em Epidemiologia, mas utilizei os meus conhecimentos de Estatística Descritiva para tentar observar caracterísiticas nas curvas que pudessem justificar as notícias que foram veiculadas sobre esses países. De maneira geral, acredito que as recomendações dadas pela Organização Mundial da Saúde, sobre testagem em massa e isolamento social, são os melhores caminhos para que o sistema de saúde dos países tenha capacidade de internar os doentes e que a Ciência tenha tempo para buscar soluções médicas para essa pandemia. Além disso, tenho ciência do grave cenário econômico que estamos vivendo e torço que as decisões que serão tomadas pelos chefes de governo sejam sempre em prol do bem comum.</p>
-<p>Por fim, gostaria que compartilhar uma das ideias da matéria do jornal britânico <a href="https://www.theguardian.com/world/2020/apr/12/coronavirus-statistics-what-can-we-trust-and-what-should-we-ignore?CMP=share_btn_fb&amp;fbclid=IwAR0wWpwhqDtRa5qohJyNNKTBhGmcIB_n-_lcrnhyvRoKp7WskmH4caoMSy8"><em>The Guardian</em></a>, que o <a href="https://sigaa.ufrn.br/sigaa/public/docente/portal.jsf?siape=1023112">Professor Marcelo Bourguignon</a>, da UFRN, mandou para mim. O texto contempla as falas de dois dos mais renomados estatísticos do mundo: <a href="https://www.mrc-bsu.cam.ac.uk/people/in-alphabetical-order/n-to-s/sylvia-richardson/">Sylvia Richardson</a> e <a href="http://www.statslab.cam.ac.uk/~david/">Sir David Spiegelhalter</a>. Eles ressaltam que é tentador vincular as estatísticas de um país às medidas que eles tomaram para controlar o vírus. Cabe ressaltar que países diferem de várias formas: demografia básica, capacidade e política de teste, características dos serviços de saúde, clima, extensão territorial e assim por diante.</p>
-</div>
 
-  </article>
-</section>
 
+
+var disqus_config = function () {
+this.page.url = PAGE_URL;  
+this.page.identifier = PAGE_IDENTIFIER; 
+};
+
+
+(function() { 
+var d = document, s = d.createElement('script');
+s.src = 'https://disqus.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
       </div>
 

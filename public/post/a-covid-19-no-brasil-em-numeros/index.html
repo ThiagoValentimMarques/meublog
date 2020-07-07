@@ -107,63 +107,27 @@
 
       <div class="content">
         
-  <section class="container page">
-  <article>
-    <header>
-      <h1>A Covid-19 no Brasil</h1>
-    </header>
-
-    
+  <div id="disqus_thread"></div>
+<script>
 
 
-<div id="para-início-de-conversa" class="section level3">
-<h3>Para início de conversa</h3>
-<p>Atualmente o mundo vive em uma situação que jamais pensei que iríamos passar. Escolas e universidades com aulas suspensas, empresas de portas fechadas, competições esportivas suspensas, o que incluiu até as olímpiadas de Tóquio que ocorreriam este ano. Enfim, desde que a Organização Mundial da Saúde (OMS) classificou a <em>Covid-19</em> (do inglês, <em>“Coronavirus disease”</em>) como pandemia, autoridades vários países vêm recomendando o isolamento social para evitar o avanço da Covid-19. O vírus já infectou mais de 1,8 milhão de pessoas e provocou cerca de 110 mil mortes em todo o mundo.</p>
-<p>A Covid-19 foi identificada pela primeira vez em Wuhan, na província de Hubei, República Popular da China, em 1 de dezembro de 2019. O primeiro caso foi reportado em 31 de dezembro do mesmo ano e no dia 11 de março de 2020 foi classificada como pandemia pela OMS. Desde então, as secretarías nacionais de saúde começaram a quantificar os pacientes infectados, recuperados e mortos pelo novo coronavírus. Apesar dos conjuntos de dados da Covid-19 apresentarem em geral problemas de subnotificação de infectados e de mortos, tenho certeza de esta pandemia será aquela cuja sociedade terá mais informações à respeito.</p>
-</div>
-<div id="objetivo-dos-posts" class="section level3">
-<h3>Objetivo dos posts</h3>
-<p>O <strong>objetivo</strong> das postagens iniciais deste blog será a realização de análises descritivas da Covid-19 nos cenários local (Rio Grande do Norte), brasileiro e internacional. Para os leitores que desejarem informações sobre modelos preditivos para dados epidemiológicos, recomendo que acessem o <a href="https://andersoncso.shinyapps.io/Brasil/?fbclid=IwAR0ykIzDZ341JfolzlqEDZl-cjp4IRVKXhC5AOUk5i3-eWuSo3FyiaJyo-c">aplicativo</a> desenvolvido pelo departamento de estatística da UFMT. Todos os códigos utilizados neste post estão no <a href="https://github.com/ThiagoValentimMarques">meu GitHub</a>.</p>
-</div>
-<div id="sobre-os-dados" class="section level3">
-<h3>Sobre os dados</h3>
-<p>As informações sobre o número de casos confirmados, óbitos e pacientes recuperados da Covid-19 em âmbito internacional estão sendo obtidas pelo <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">conjunto de dados</a> do Johns Hopkins of Public Healt. Em âmbito nacional, essas informações (com exceção do número de pacientes recuperados) encontram-se na <a href="https://covid.saude.gov.br/">plataforma</a> do Ministério da Saúde sobre o novo coronavírus.</p>
-<p>Todas as análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
-<pre class="r"><code>library(tidyverse)
-library(lubridate)
-library(brazilmaps)
-library(gridExtra)
-library(ggspatial)
-library(ggrepel)</code></pre>
-</div>
-<div id="casos-confirmados-e-óbitos-pelo-novo-coronavírus" class="section level3">
-<h3>Casos confirmados e óbitos pelo novo coronavírus</h3>
-<p>No Brasil, o primeiro caso confirmado e a primeira morte foram registrados nos dias 26 de fevereiro e 17 de março, respectivamente. Vale ressaltar que somente os pacientes que vêm procurando o hospital e apresentam alguma evidência médica para Covid-19 estão sendo testados aqui no Brasil, ou seja, os casos confirmados relatados pelo Ministério da Saúde tem problema de subnotificação. Imagino que as informações relativas aos óbitios são as que mais se aproximam do valor real. Um outro indicativo de subnotificação é a taxa de letalidade muito alta (5,5%), visto que <a href="https://www.nature.com/articles/s41591-020-0822-7">Wu et al. (2020)</a> identificaram taxa de 1,4% em Wuhan, que teve testagem em massa.</p>
-<p>O Gráfico a seguir mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Brasil. Nota-se que a partir do dia 18/03 o acumulado dos casos confirmados começou a “subida do morro”. Apesar das subnotificações, estes são os dados que temos. Acredito que nas próximas semanas o número de casos irá “explodir” em virtude dos testes 500 mil testes rápidos prometidos pelo Governo Federal.</p>
-<p><img src="/post/2020-04-11-a-covid-19-no-brasil-em-numeros_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>No último boletim do Ministério da Saúde, hoje 12 de abril, foram registrados 1442 casos de Covid-19, enquanto úmero de óbito nos foi de 99. Após três dias consecutivos de queda no número de casos confirmados em relação ao dia anterior, o número de casos diários voltou a crescer.</p>
-<p>Vale ressaltar que o Brasil é um dos países com a menor quantidade de testes realizados do mundo (296 por 1 milhão de pessoas, de acordo com o <a href="https://www.worldometers.info/coronavirus/">worldometer</a>) e isso pode causar a falsa impressão de que o vírus não está se alastrando como em outros países. Desse modo, temo que algumas pessoas pensem em afrouxar o isolamento social.</p>
-<p><img src="/post/2020-04-11-a-covid-19-no-brasil-em-numeros_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-</div>
-<div id="o-mapa-da-covid-19-no-brasil" class="section level3">
-<h3>O mapa da Covid-19 no Brasil</h3>
-<p>A seguir temos o mapa do número de casos abslutos por estado e também um mapa com o número de casos considerando a população de cada estado. São Paulo é disparado o estado com maior número de casos no Brasil (8755) casos. Com relação a incidência do vírus, (proporção de casos numa determinada população) temos o
-Amazonas (29,1), Amapá (27,2), Distrito Federal (20,4), São Paulo (19,1), Ceará (18,4) e Rio de Janeiro (16,5 casos/100.000 hab.) ocupam as primeiras posições desse ranking nem um pouco orgulhoso.</p>
-<p>Para visualizar o mapa clique <a href="https://github.com/ThiagoValentimMarques/covid12042020/blob/master/brasil1104.png?raw=true">aqui</a>.</p>
-</div>
-<div id="região-nordeste" class="section level3">
-<h3>Região Nordeste</h3>
-<p>Os gráficos a seguir mostram como estão os estados do Nordeste com relação aos casos confirmados do novo coronavírus. Tanto nos casos confirmados quanto na incidência da Covid-19, o estado do Ceará registra os maiores valores. Notem que mesmo sendo o quinto estado nordestino no número de casos, o Rio Grande do Norte só está atrás de Ceará e Pernambuco na incidência do vírus. Nota-se que a partir de 4 de abril (215 casos), o Rio Grande do Norte tem tido poucos casos diários da Covid-19 (302 no momento). Penso que isso deve se deve pela grande espera pelos resultados dos muitos exames. Paraíba, Sergipe, Piauí e Alagoas são os estados com menor número de casos confirmados e menor incidência da Covid-19 apresentando quantidades inferiores a 110 casos e 3 casos/100.000 habitantes, respectivamente.</p>
-<p><img src="/post/2020-04-11-a-covid-19-no-brasil-em-numeros_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p><img src="/post/2020-04-11-a-covid-19-no-brasil-em-numeros_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Algo que impressiona bastante é o gráfico da letalidade nos estados do Nordeste. Piauí, Paraíba, Sergipe e Pernambuco estão apresentando letalidade muito alta. Em particular, o Piauí apresenta letalidade absurdamente alta (15,9%). A Bahia, em contraste, apresenta a menor letalidade (3,1%). Como eu disse anteriormente, isso é um forte indicativo de subnotifcação. Diante dos poucos testes que estamos fazendo, podemos ter a impressão de que a Covid-19 mata muito mais do que está matando na realidade. Além disso, essas subnotificações aliada com a ausência do registro do número de casos recuperados tornam os modelos epidimiológicos (por exemplo o modelo SIR) com previsões catastróficas. Como diria uma frase que vi hoje e se encaixa nessa situação: “não se faz um bolo bom com ingredientes ruins”.</p>
-<p><img src="/post/2020-04-11-a-covid-19-no-brasil-em-numeros_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>A análise de hoje se encerra por aqui. Na próxima postagem irei apresentar a evolução do acumulado de casos no Brasil comparada com o que está ocorrendo em outros países. Até a próxima pessoal!!!</p>
-</div>
 
-  </article>
-</section>
 
+
+var disqus_config = function () {
+this.page.url = PAGE_URL;  
+this.page.identifier = PAGE_IDENTIFIER; 
+};
+
+
+(function() { 
+var d = document, s = d.createElement('script');
+s.src = 'https://disqus.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
       </div>
 

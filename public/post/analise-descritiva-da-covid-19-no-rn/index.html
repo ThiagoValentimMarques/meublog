@@ -107,62 +107,27 @@
 
       <div class="content">
         
-  <section class="container page">
-  <article>
-    <header>
-      <h1>Análise descritiva da Covid-19 no RN</h1>
-    </header>
-
-    
+  <div id="disqus_thread"></div>
+<script>
 
 
-<div id="para-início-de-conversa" class="section level3">
-<h3>Para início de conversa</h3>
-<p>No dia 12 de março de 2020 (contabilizado no dia 13 pelo Ministério da Saúde) uma mulher de 24 anos, com histórico de viagem à Europa (França, Itália e Áustria) foi o primeiro caso diagnosticado de Covid-19 no Rio Grande do Norte. Já o primeiro óbito foi registrado no dia 29 de março de 2020 (contabilizado no dia 30 pelo Ministério da Saúde). A vítima era um homem de 61 anos que estava hospitalizado em Mossoró. Ele tinha histórico de diabetes e teve contato com um caso suspeito.</p>
-<p>Já se passaram 48 dias desde o primeiro caso confirmado no RN e exatamente um mês do primeiro óbito. Atualmente a Governadora do Estado, Fátima Bezerra, vive uma pressão enorme por parte dos empresários para flexibilizar as medidas de isolamento e distanciamento social. Em <a href="http://jornalagorarn.com.br/uploads/materiais/50f75361735336fa477e7def048e6bff.pdf">entrevista</a> ao jornal Agora RN a governadora afirma que a retomada da economia está condicionada à melhora na oferta de leitos e “achatamento da curva”.</p>
-<p>Diante desse cenário, resolvi fazer uma análise descritiva dos dados da Covid-19 no Rio Grande do Norte para avaliar (i) a situação do nosso estado quanto a curva de casos confirmados e óbitos, (ii) comparação com os demais estados do Nordeste, (iii) faixa etária dos casos confirmados e dos óbitos e (iv) as condições pré-existentes nos óbitos por Covid-19.</p>
-</div>
-<div id="sobre-os-dados" class="section level3">
-<h3>Sobre os dados</h3>
-<p>As informações sobre o número de casos confirmados e óbitos por Covid-19 em âmbito nacional estão sendo obtidas na <a href="https://covid.saude.gov.br/">plataforma</a> do Ministério da Saúde sobre o novo coronavírus. Localmente, os dados sobre número de testes, número de casos confirmados e óbtidos, condições pré-existentes nos óbitos, distribuição espacial dos óbitos no RN entre outros foram obtidas pelo <a href="https://covid.lais.ufrn.br/">portal do coronavírus</a> do Laboratório de Inovação Tecnológica em Saúde (LAIS).</p>
-<p>Todas as análises estatísticas foram realizadas no <strong>software R versão 3.6.3</strong> com o auxílio dos seguintes pacotes:</p>
-<pre class="r"><code>library(tidyverse)
-library(brazilmaps)
-library(ggrepel)
-library(gridExtra)
-library(lubridate)
-library(ggspatial)</code></pre>
-<p>Todos os códigos utilizados neste post estão no <a href="https://github.com/ThiagoValentimMarques">meu GitHub</a>.</p>
-</div>
-<div id="casos-confirmados-e-óbitos-por-covid-19-no-rn" class="section level3">
-<h3>Casos confirmados e óbitos por Covid-19 no RN</h3>
-<p>A <strong>Figura 1</strong> mostra a série histórica do acumulado de casos e do número de óbitos por Covid-19 no Rio Grande do Norte. Segundo o último boletim do Ministério da Saúde, em 28 de abril, o RN registrou 857 casos confirmados e 48 óbitos até o momento. Percebe-se que a letalidade está em 5,6% e, como sempre venho dizendo, isso é um forte indicativo de que há subnotificação nos casos confirmados. Mesmo assim, essas informações são úteis para perceber possíveis padrões. Por exemplo, nos registros diários de casos percebe-se que nas duas últimas semanas esse número vem oscilando, predominantemente, dentro do intervalo entre 10 e 70 casos (<strong>Figura 2</strong>).</p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-3-1.png" width="672" /><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<p>Para não perder informações sobre a quantidade de óbitos, visto que estão no mesmo gráfico consirando a escala dos casos confirmados, resolvi apresentá-las na <strong>Figura 3</strong>. Notem que estamos na etapa de crescimento dos óbitos, que muito provavelmente não está mais acelerado por causa das medidas de isolamento e distanciamento social. Um outro detalhe relevante para ser observado é que desde o dia 11 de abril morre pelo menos uma pessoa por Covid-19 no RN.</p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-</div>
-<div id="distribuição-espacial-dos-óbitos" class="section level3">
-<h3>Distribuição espacial dos óbitos</h3>
-<p>As informações coletadas sobre as 45 mortes registradas no RN até o dia 27 de abril, mostram que Natal e Mossoró registram o maior número de óbtidos (11 e 10, respectivamente) e as demais cidades que estão destacadas em tons de vermelho no mapa apresentam no máximo 3 óbitos (<strong>Figura 4</strong>). Acho muito importante que os dados sejam comparados considerando a população de cada município, mas considerando que a maioria dos municípios destacados apresetam 1 óbito, resolvi deixar a elaboração deste mapa em uma análise futura.</p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-</div>
-<div id="comparação-dos-óbitos-com-os-demais-estados-do-nordeste" class="section level3">
-<h3>Comparação dos óbitos com os demais estados do Nordeste</h3>
-<p>Atualmente o Rio Grande do Norte registra 1,4 óbitos por 100 mil habitantes (<strong>Figura 5</strong>). Considerando a população dos estados da Região Nordeste, essa taxa fica abaixo de Pernambuco (5,48), Ceará (4,56) e Maranhão (2,11). Noata-se que Parnambuco e Ceará apresentam curvas similares e apresentam um crescimento de casos bem mais acelerado do que os demais estados do Nordeste. Achei conveniente trabalhar com os óbitos por se tratar de algo mais próximo da realidade.</p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>Os dados do LAIS/UFRN mostram que 60% das condições pré-existentes presentes nos óbitos por Covid-19 no RN são formados por asma (7%), obesidade (10%), hipertensão (14%) e diabetes (29%) (<strong>Figura 6</strong>). Sobre a faixa etária, cerca de 70% dos óbitos são formados por pessoas com 50 anos ou mais (<strong>Figura 7</strong>). Quando se categoriza por sexo, 64% dos óbitos são do sexo masculino, mas quando a faixa etária é de 65 anos ou mais o número de mulheres tem sido maior (<strong>Figura 8</strong>).</p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p><img src="/post/2020-04-29-analise-descritiva-da-covid-19-no-rn_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-</div>
-<div id="finalizando-a-conversa" class="section level3">
-<h3>Finalizando a conversa</h3>
-<p>Com os dados do Ministério da Saúde e do LAIS/UFRN buscou-se fazer uma análise descritiva do cenário atual da pandemia de coronavírus no RN. De maneira geral, não temos nenhuma garantia de que a pandemia está controlada no nosso estado. Acredito que manter as medidas de isolamento e distanciamento social é a melhor medida a ser tomada pelos nossos governantes. Além disso, o maior número de testes e também uma campanha para a distribuição de máscaras são de suma importância para tentar conhecer melhor o vírus e aumentar a proteção da população, respectivamente.</p>
-</div>
 
-  </article>
-</section>
 
+
+var disqus_config = function () {
+this.page.url = PAGE_URL;  
+this.page.identifier = PAGE_IDENTIFIER; 
+};
+
+
+(function() { 
+var d = document, s = d.createElement('script');
+s.src = 'https://disqus.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
       </div>
 
